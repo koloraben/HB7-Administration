@@ -10,6 +10,7 @@
   "dependencies": {
     "angular-chart.js": "^1.0.2",
     "chart.js": "^2.2.2",
+    "daypilot-pro-angular": "https://npm.daypilot.org/daypilot-pro-angular/trial/2019.1.3531.tar.gz",
     "vis": "^4.20.1"
   },
   "devDependencies": {
@@ -20,7 +21,7 @@
     "chance": "^0.7.6",
     "css-loader": "^0.16.0",
     "extract-text-webpack-plugin": "^0.8.2",
-    "html-loader": "^0.3.0",
+    "html-loader": "^0.5.5",
     "md5": "^2.0.0",
     "moment": "^2.10.6",
     "ng-admin": "marmelab/ng-admin",

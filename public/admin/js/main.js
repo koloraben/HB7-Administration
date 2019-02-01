@@ -1,6 +1,5 @@
 'use strict'
-var myApp = angular.module('myApp', ['ng-admin','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
-
+var myApp = angular.module('myApp', ['ng-admin','daypilot','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
 myApp.controller('envVariablesCtrl', ['$scope', '$http', function ($scope, $http) {
     $http.get('../api/env_settings').then(function(response) {
         $scope.version_number = "Version: "+response.data.backoffice_version;
@@ -8,6 +7,78 @@ myApp.controller('envVariablesCtrl', ['$scope', '$http', function ($scope, $http
         $scope.company_logo = response.data.company_logo;
     });
 }]);
+
+myApp.controller('DemoCtrl', ['$scope', '$http', function ($scope, $timeout, $http) {
+        $scope.navigatorConfig = {
+        selectMode: "day",
+        showMonths: 3,
+        skipMonths: 3,
+        onTimeRangeSelected: function(args) {
+            $scope.weekConfig.startDate = args.day;
+            $scope.dayConfig.startDate = args.day;
+
+        }
+    };
+    $scope.dayConfig = {
+        locale: "fr-fr",
+        viewType: "Day",
+        visible:false,
+        businessBeginsHour:0,
+        businessEndsHour:23,
+        durationBarVisible : true,
+        durationBarMode : "PercentComplete"
+    };
+    $scope.weekConfig = {
+        locale: "fr-fr",
+        viewType: "Week",
+        businessBeginsHour:0,
+        businessEndsHour:0,
+        durationBarVisible : true,
+        durationBarMode : "PercentComplete",
+        eventDeleteHandling: "Update",
+        eventMoveHandling: "Disabled",
+        onEventClicked: function (args) {
+          console.log("Event clicked: " + args.e.start());
+        },
+        onEventDeleted: function (args) {
+            console.log("Event deleted: " + args.e.text());
+        },
+        timeRangeSelectedHandling: "Enabled",
+        onTimeRangeSelected: function (args) {
+            console.log("eeee :" + JSON.stringify(args))
+
+        },
+    };
+    $scope.events = [
+        {
+            "id":"12",
+            "text":"Test",
+            "resource": "A",
+            "start":"2019-02-01T12:10:00",
+            "end":"2019-02-01T16:30:00",
+
+        },
+        {
+            "id":"12",
+            "text":"Test",
+            "resource": "A",
+            "start":"2019-02-01T16:30:00",
+            "end":"2019-02-01T16:32:00",
+
+        }
+    ];
+
+    $scope.showDay = function() {
+        $scope.dayConfig.visible = true;
+        $scope.weekConfig.visible = false;
+    };
+
+    $scope.showWeek = function() {
+        $scope.dayConfig.visible = false;
+        $scope.weekConfig.visible = true;
+    };
+}]);
+
 
 myApp.controller('main', function ($scope, $rootScope, $location, notification) {
     $rootScope.$on('$stateChangeSuccess', function () {

@@ -197,6 +197,7 @@ export default [{
         "group_roles":["admin","administrator","customercare","management","guest"],
         "children": []
     },
+
     {
         "template":'<div class="menu_space">TV / VOD</div>',
         "group_roles":["admin","administrator","customercare","management","guest"],
@@ -210,6 +211,13 @@ export default [{
     //     "group_roles":["admin","administrator","customercare","management"],
     //     "children": []
     // },
+    {
+        "title":"HB7television",
+        "link":'/hb7television',
+        "icon":'<span class="fa fa-television fa-fw"></span>',
+        "group_roles":["admin","administrator","customercare","management","guest"],
+        "children": []
+    },
     {
         "title":"TV Channels",
         "icon":'<span class="fa fa-television fa-fw"></span>',

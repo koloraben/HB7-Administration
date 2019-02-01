@@ -125,7 +125,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         company_logo: {
             type: DataTypes.STRING(255),
-            defaultValue: "/admin/images/mago.png",
+            defaultValue: "/files/settings/mago.png",
             allowNull: false
         },
         company_name: {

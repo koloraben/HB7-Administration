@@ -27,4 +27,24 @@
         <vis-timeline data="data" options="options"></vis-timeline>
     </div>
 
+    <div class="container-fluid">
+
+    <span ng-app="myApp" ng-controller="DemoCtrl">
+    <button ng-click="showDay()">Day</button>
+    <button ng-click="showWeek()">Week</button>
+
+        <div class="row">
+            <div class="col-lg-2">
+                <daypilot-navigator id="navi" daypilot-config="navigatorConfig" ></daypilot-navigator>
+            </div>
+            <div class="col-lg-10">
+                <daypilot-calendar id="week" daypilot-config="weekConfig" daypilot-events="events" ></daypilot-calendar>
+                <daypilot-calendar id="day" daypilot-config="dayConfig" daypilot-events="events" ></daypilot-calendar>
+            </div>
+        </div>
+        </span>
+
+    </div>
+
+
 </div>
