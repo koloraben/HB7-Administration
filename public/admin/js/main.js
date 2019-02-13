@@ -1,5 +1,5 @@
 'use strict'
-var myApp = angular.module('myApp', ['ng-admin','daypilot','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
+var myApp = angular.module('myApp', ['720kb.datepicker','ng-admin','angularMoment','ngFileUpload','daypilot','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
 myApp.controller('envVariablesCtrl', ['$scope', '$http', function ($scope, $http) {
     $http.get('../api/env_settings').then(function(response) {
         $scope.version_number = "Version: "+response.data.backoffice_version;
@@ -31,8 +31,6 @@ myApp.controller('DemoCtrl', ['$scope', '$http', function ($scope, $timeout, $ht
     $scope.weekConfig = {
         locale: "fr-fr",
         viewType: "Week",
-        businessBeginsHour:0,
-        businessEndsHour:0,
         durationBarVisible : true,
         durationBarMode : "PercentComplete",
         eventDeleteHandling: "Update",
@@ -218,7 +216,6 @@ myApp.directive('seeDrag', ['$location','$http', function ($location,$http) {
         template: '<a type="buton" class="btn btn-default" ng-click="see()"><i class="fa fa-plus fa-lg"></i>&nbsp;&nbsp;ADD CHANNELS</a>'
     };
 }]);
-
 
 myApp.controller('dragdropctrl', ['$scope','$http','$stateParams','notification', function ($scope,$http,$stateParams,notification) {
     $scope.models = [
@@ -473,13 +470,15 @@ myApp.config(['NgAdminConfigurationProvider', function (nga) {
     // App Create
 
 	if (location.protocol == 'http:') {
-		var admin = nga.application('MAGOWARE').baseApiUrl('http://' + location.host + '/api/');
+		var admin = nga.application('HB7Television').baseApiUrl('http://' + location.host + '/api/');
 	} else {
-		var admin = nga.application('MAGOWARE').baseApiUrl('https://' + location.host + '/api/');
+		var admin = nga.application('HB7Television').baseApiUrl('https://' + location.host + '/api/');
 	}
 
     // Table Configuration
 
+    admin.addEntity(nga.entity('hb7television'));
+    admin.addEntity(nga.entity('channel_video'));
     admin.addEntity(nga.entity('Channels'));
     admin.addEntity(nga.entity('ChannelStreams'));
     admin.addEntity(nga.entity('ChannelStreamSources'));
@@ -548,6 +547,8 @@ myApp.config(['NgAdminConfigurationProvider', function (nga) {
 
 
     //Config
+    require('./hb7television/config')(nga, admin);
+    require('./channel_video/config')(nga, admin);
     require('./Season/config')(nga, admin);
     require('./Series/config')(nga, admin);
 

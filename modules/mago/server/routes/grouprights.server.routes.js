@@ -14,13 +14,13 @@ module.exports = function(app) {
 
     /* ===== groups ===== */
     app.route('/api/grouprights')
-        //.all(policy.isAllowed)
+        //.all(policies.isAllowed)
         .get(grouprights.list)
         .put(grouprights.update)
         .post(grouprights.create);
 
     app.route('/api/grouprights/:grouprightsId')
-        //.all(policy.isAllowed)
+        //.all(policies.isAllowed)
         .get(grouprights.read)
         .put(grouprights.update);
         //.delete(groups.delete);

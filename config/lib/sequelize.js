@@ -304,7 +304,7 @@ db.connect = function(database, username, password, options) {
         }
         return null;
     }).catch(function(error) {
-        winston.error("Error connecting to database");
+        winston.error("Error connecting to database : ",error);
     });
 
     db.sequelize = sequelize;

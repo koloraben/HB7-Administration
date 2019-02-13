@@ -2,7 +2,7 @@
  * Author:    G. Lalaj
  * Created:   21-07.2016
  *
- * (c) Copyright by MAGOWARE
+ * (c) Copyright by HB7Television
  **/
 
 'use strict';

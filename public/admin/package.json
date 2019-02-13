@@ -8,9 +8,14 @@
     "url": "git://github.com/marmelab/ng-admin-demo.git"
   },
   "dependencies": {
+    "@flowjs/ng-flow": "^2.7.8",
+    "angular-bootstrap-datepicker": "^0.1.0",
     "angular-chart.js": "^1.0.2",
+    "angular-moment": "^1.3.0",
+    "angularjs-datepicker": "^2.1.23",
     "chart.js": "^2.2.2",
     "daypilot-pro-angular": "https://npm.daypilot.org/daypilot-pro-angular/trial/2019.1.3531.tar.gz",
+    "ng-file-upload": "^12.2.13",
     "vis": "^4.20.1"
   },
   "devDependencies": {
@@ -23,7 +28,7 @@
     "extract-text-webpack-plugin": "^0.8.2",
     "html-loader": "^0.5.5",
     "md5": "^2.0.0",
-    "moment": "^2.10.6",
+    "moment": "^2.24.0",
     "ng-admin": "marmelab/ng-admin",
     "node-sass": "^3.3.2",
     "sass-loader": "^2.0.1",

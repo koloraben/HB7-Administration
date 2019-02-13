@@ -45,7 +45,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	__webpack_require__(1);
-	module.exports = __webpack_require__(224);
+	module.exports = __webpack_require__(228);
 
 
 /***/ }),
@@ -53,7 +53,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var myApp = angular.module('myApp', ['ng-admin', 'daypilot', 'ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies', 'dndLists']);
+	var myApp = angular.module('myApp', ['720kb.datepicker', 'ng-admin', 'angularMoment', 'ngFileUpload', 'daypilot', 'ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies', 'dndLists']);
 	myApp.controller('envVariablesCtrl', ['$scope', '$http', function ($scope, $http) {
 	    $http.get('../api/env_settings').then(function (response) {
 	        $scope.version_number = "Version: " + response.data.backoffice_version;
@@ -84,8 +84,6 @@
 	    $scope.weekConfig = {
 	        locale: "fr-fr",
 	        viewType: "Week",
-	        businessBeginsHour: 0,
-	        businessEndsHour: 0,
 	        durationBarVisible: true,
 	        durationBarMode: "PercentComplete",
 	        eventDeleteHandling: "Update",
@@ -478,13 +476,15 @@
 	    // App Create
 	
 	    if (location.protocol == 'http:') {
-	        var admin = nga.application('MAGOWARE').baseApiUrl('http://' + location.host + '/api/');
+	        var admin = nga.application('HB7Television').baseApiUrl('http://' + location.host + '/api/');
 	    } else {
-	        var admin = nga.application('MAGOWARE').baseApiUrl('https://' + location.host + '/api/');
+	        var admin = nga.application('HB7Television').baseApiUrl('https://' + location.host + '/api/');
 	    }
 	
 	    // Table Configuration
 	
+	    admin.addEntity(nga.entity('hb7television'));
+	    admin.addEntity(nga.entity('channel_video'));
 	    admin.addEntity(nga.entity('Channels'));
 	    admin.addEntity(nga.entity('ChannelStreams'));
 	    admin.addEntity(nga.entity('ChannelStreamSources'));
@@ -552,15 +552,13 @@
 	
 	    //Config
 	    __webpack_require__(151)(nga, admin);
-	    __webpack_require__(153)(nga, admin);
-	
 	    __webpack_require__(154)(nga, admin);
-	    __webpack_require__(155)(nga, admin);
-	
 	    __webpack_require__(156)(nga, admin);
 	    __webpack_require__(157)(nga, admin);
+	
 	    __webpack_require__(158)(nga, admin);
 	    __webpack_require__(159)(nga, admin);
+	
 	    __webpack_require__(160)(nga, admin);
 	    __webpack_require__(161)(nga, admin);
 	    __webpack_require__(162)(nga, admin);
@@ -582,13 +580,13 @@
 	    __webpack_require__(178)(nga, admin);
 	    __webpack_require__(179)(nga, admin);
 	    __webpack_require__(180)(nga, admin);
+	    __webpack_require__(181)(nga, admin);
 	    __webpack_require__(182)(nga, admin);
+	    __webpack_require__(183)(nga, admin);
 	    __webpack_require__(184)(nga, admin);
-	    __webpack_require__(185)(nga, admin);
+	    __webpack_require__(186)(nga, admin);
 	    __webpack_require__(188)(nga, admin);
 	    __webpack_require__(189)(nga, admin);
-	    __webpack_require__(190)(nga, admin);
-	    __webpack_require__(191)(nga, admin);
 	    __webpack_require__(192)(nga, admin);
 	    __webpack_require__(193)(nga, admin);
 	    __webpack_require__(194)(nga, admin);
@@ -614,20 +612,24 @@
 	    __webpack_require__(214)(nga, admin);
 	    __webpack_require__(215)(nga, admin);
 	    __webpack_require__(216)(nga, admin);
+	    __webpack_require__(217)(nga, admin);
+	    __webpack_require__(218)(nga, admin);
+	    __webpack_require__(219)(nga, admin);
+	    __webpack_require__(220)(nga, admin);
 	
 	    // Menu / Header / Dashboard / Layout
 	
 	    if (localStorage.userRole === 'resellers') {
-	        admin.dashboard(__webpack_require__(217)(nga, admin));
+	        admin.dashboard(__webpack_require__(221)(nga, admin));
 	    } else {
-	        admin.dashboard(__webpack_require__(219)(nga, admin));
+	        admin.dashboard(__webpack_require__(223)(nga, admin));
 	    }
 	
-	    admin.header(__webpack_require__(221));
+	    admin.header(__webpack_require__(225));
 	
-	    var menujson = __webpack_require__(222);
+	    var menujson = __webpack_require__(226);
 	    // console.log("objekti menus",menujson);
-	    admin.menu(__webpack_require__(223)(nga, admin, menujson));
+	    admin.menu(__webpack_require__(227)(nga, admin, menujson));
 	
 	    // admin.menu(require('./menu')(nga, admin));
 	
@@ -18828,6 +18830,72 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
+	var _hb7televisionHtml = __webpack_require__(153);
+	
+	var _hb7televisionHtml2 = _interopRequireDefault(_hb7televisionHtml);
+	
+	exports['default'] = function (nga, admin) {
+	    return admin.getEntity('hb7television').listView().fields([nga.field('id', 'string').isDetailLink(true).label('ID')]).template(_hb7televisionHtml2['default']);
+	};
+	
+	module.exports = exports['default'];
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports) {
+
+	module.exports = "<div class=\"row\">\r\n    <div class=\"btn-group inline pull-right\">\r\n      <div class=\"btn btn-small\"><ma-submit-button class=\"pull-right\" label=\"Submit\"></ma-submit-button></div>\r\n      <div class=\"btn btn-small\"><ma-back-button class=\"pull-right\" label=\"Cancel\"></ma-back-button></div>\r\n    </div>\r\n</div>\r\n\r\n<hr>";
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports) {
+
+	module.exports = "<div class=\"row dashboard-starter\"></div>\r\n<div class=\"row dashboard-content\" ng-app=\"myApp\" ng-controller=\"hb7Ctr\">\r\n    <div class=\"container-fluid\">\r\n    <a class=\"btn btn-default\" ng-click=\"showDay()\">Jour</a>\r\n    <a class=\"btn btn-default\" ng-click=\"showWeek()\">Semaine</a>\r\n    <br>\r\n    <br>\r\n        <div class=\"row\">\r\n            <div class=\"col-lg-2\">\r\n                <daypilot-navigator id=\"navi\" daypilot-config=\"navigatorConfig\" ></daypilot-navigator>\r\n            </div>\r\n            <div class=\"col-lg-10\">\r\n                <daypilot-calendar id=\"week\" daypilot-config=\"weekConfig\" daypilot-events=\"events\" ></daypilot-calendar>\r\n                <daypilot-calendar id=\"day\" daypilot-config=\"dayConfig\" daypilot-events=\"events\" ></daypilot-calendar>\r\n            </div>\r\n        </div>\r\n    </div>\r\n\r\n</div>";
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _channel_videoChannel_videoHtml = __webpack_require__(155);
+	
+	var _channel_videoChannel_videoHtml2 = _interopRequireDefault(_channel_videoChannel_videoHtml);
+	
+	exports['default'] = function (nga, admin) {
+	    return admin.getEntity('channel_video').listView().fields([nga.field('id', 'string').isDetailLink(true).label('ID')]).template(_channel_videoChannel_videoHtml2['default']);
+	};
+	
+	module.exports = exports['default'];
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports) {
+
+	module.exports = "<!DOCTYPE html>\r\n<style>\r\n    /**\r\n * For the correct positioning of the placeholder element, the dnd-list and\r\n * it's children must have position: relative\r\n */\r\n    .typesDemo ul[dnd-list],\r\n    .typesDemo ul[dnd-list] > li {\r\n        position: relative;\r\n        margin-bottom: 6px;\r\n    }\r\n    .panel {\r\n        background-color: #f5f5f5!important;\r\n    }\r\n\r\n\r\n    .selectFile{\r\n        height: 90px;\r\n        background: #F8F8F8;\r\n        border: 5px dashed #DDD;\r\n        padding: 1%;\r\n        padding-left: 16%;\r\n    }\r\n    /**\r\n     * The dnd-list should always have a min-height,\r\n     * otherwise you can't drop to it once it's empty\r\n     */\r\n    .typesDemo ul[dnd-list] {\r\n        min-height: 42px;\r\n        padding-left: 0px;\r\n        background-color:#f5f5f5 ;\r\n    }\r\n\r\n    /**\r\n     * The dndDraggingSource class will be applied to\r\n     * the source element of a drag operation. It makes\r\n     * sense to hide it to give the user the feeling\r\n     * that he's actually moving it.\r\n     */\r\n    .typesDemo ul[dnd-list] .dndDraggingSource {\r\n        display: none;\r\n    }\r\n\r\n    /**\r\n     * An element with .dndPlaceholder class will be\r\n     * added to the dnd-list while the user is dragging\r\n     * over it.\r\n     */\r\n    .typesDemo ul[dnd-list] .dndPlaceholder {\r\n        display: block;\r\n        background-color: #ddd;\r\n        padding: 10px 15px;\r\n        min-height: 42px;\r\n    }\r\n\r\n    /**\r\n     * The dnd-lists's child elements currently MUST have\r\n     * position: relative. Otherwise we can not determine\r\n     * whether the mouse pointer is in the upper or lower\r\n     * half of the element we are dragging over. In other\r\n     * browsers we can use event.offsetY for this.\r\n     */\r\n    .typesDemo ul[dnd-list] li {\r\n        background-color: #fff;\r\n        border: 1px solid #ddd;\r\n        border-top-right-radius: 4px;\r\n        border-top-left-radius: 4px;\r\n        display: block;\r\n\r\n        /* Disable text selection if item is not draggable */\r\n        -webkit-touch-callout: none;\r\n        -webkit-user-select: none;\r\n        -khtml-user-select: none;\r\n        -moz-user-select: none;\r\n        -ms-user-select: none;\r\n        user-select: none;\r\n    }\r\n\r\n    .typesDemo ul[dnd-list] li dnd-nodrag {\r\n        display: block;\r\n        padding: 10px 15px;\r\n    }\r\n\r\n    /**\r\n     * Gender-specifc background\r\n     */\r\n    .typesDemo ul[dnd-list] li.background-man {\r\n        background-color: #CAE0FC;\r\n    }\r\n\r\n    .typesDemo ul[dnd-list] li.background-woman {\r\n        background-color: #FFE2F5;\r\n    }\r\n\r\n    .typesDemo ul[dnd-list] input.background-man {\r\n        background-color: #D8E9FF;\r\n        color: #2F4D99;\r\n    }\r\n\r\n    .typesDemo ul[dnd-list] input.background-woman {\r\n        background-color: #FFF0FA;\r\n        color: #D84FA7;\r\n    }\r\n\r\n    /**\r\n     * Handle positioning\r\n     */\r\n    .typesDemo .handle {\r\n        cursor: move;\r\n        position: absolute;\r\n        top: 14px;\r\n    }\r\n\r\n    .typesDemo .name {\r\n        margin-left: 20px;\r\n    }\r\n</style>\r\n<html>\r\n\r\n<body ng-app=\"myApp\" >\r\n<div ng-controller=\"channel_video\">\r\n<div class=\"row dashboard-starter\"></div>\r\n\r\n\r\n\r\n<div ng-controller=\"channel_video\">\r\n\r\n    <div class=\"multiDemo row\">\r\n\r\n\r\n        <div class=\"col-md-6\">\r\n            <datepicker date-format=\"dd-MM-yyyy\" selector=\"form-control\">\r\n                <div class=\"input-group\" style=\"    width: 86%;\r\n    margin-left: -2%;\r\n    margin-bottom: 3%;\">\r\n                    <input ng-model=\"channelDay.broadcast_day\"  class=\"form-control\" placeholder=\"Selectioner une date\"/>\r\n                    <span class=\"input-group-addon\" style=\"cursor: pointer\">\r\n        <i class=\"fa fa-lg fa-calendar\"></i>\r\n        </span>\r\n                </div>\r\n            </datepicker>\r\n            <div class=\"row\">\r\n\r\n                <div class=\"typesDemo row\">\r\n\r\n                    <div ng-repeat=\"list in videoLists\" class=\"col-md-10\">\r\n                        <div class=\"panel panel-info\">\r\n                            <form class=\"form-inline\" name=\"form\">\r\n                            <div class=\"panel-heading selectFile\" ngf-pattern=\".mp4\" ngf-select=\"upload($file)\" ngf-drop=\"upload($file)\" ng-model=\"file\" name=\"file\">\r\n                                                <h3>Selectionner une video mp4 </h3>\r\n                            </div>\r\n                            <div class=\"progress\" style=\"margin: 0px ;padding: 0px\" >\r\n                                <div class=\"progress-bar\" role=\"progressbar\" ng-style=\"{ 'width': file.progressPercentage + '%' }\"></div>\r\n                            </div>\r\n                            </form>\r\n                            <ul dnd-list=\"list.videos\">\r\n\r\n                                <li ng-repeat=\"video in list.videos track by $index\"\r\n                                    dnd-draggable=\"video\"\r\n                                    dnd-type=\"video.type\"\r\n                                    dnd-effect-allowed=\"copyMove\"\r\n                                    dnd-disable-if=\"video.type == 'unknown'\"\r\n                                    dnd-moved=\"list.videos.splice($index, 1)\"\r\n                                    style=\"background-color: #CAE0FC;\"\r\n                                >\r\n\r\n                                    {{video.name}}\r\n                                    <button ng-click=\"deleteVideo($index,video)\" type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">\r\n                                        <span  aria-hidden=\"true\">&times;</span>\r\n                                    </button>\r\n\r\n\r\n                                </li>\r\n\r\n                                <li class=\"dndPlaceholder\">\r\n                                    Drop video\r\n                                </li>\r\n\r\n                            </ul>\r\n                        </div>\r\n                    </div>\r\n\r\n                </div>\r\n\r\n            </div><!--row-->\r\n            <br/><br/>\r\n        </div><!--col-md-12-->\r\n        <div class=\"col-md-6\">\r\n            <form>\r\n                <div class=\"form-group row\">\r\n                    <label for=\"inputTitre\" class=\"col-sm-2 col-form-label\">Titre</label>\r\n                    <div class=\"col-sm-10\">\r\n                        <input  class=\"form-control\" id=\"inputTitre\" ng-model=\"channelDay.title\" placeholder=\"\">\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"form-group row\">\r\n                    <label for=\"inputAuthor\" class=\"col-sm-2 col-form-label\">Auteur</label>\r\n                    <div class=\"col-sm-10\">\r\n                        <input  disabled class=\"form-control\" id=\"inputAuthor\" placeholder=\"\" ng-model=\"channelDay.author\">\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"form-group row\">\r\n                    <label for=\"inputDate\" class=\"col-sm-2 col-form-label\">Date de Diffusion</label>\r\n                    <div class=\"col-sm-10\">\r\n                        <input disabled  class=\"form-control\" id=\"inputDate\" placeholder=\"\" ng-model=\"channelDay.broadcast_day\">\r\n                    </div>\r\n                </div>\r\n\r\n                <div class=\"form-group row\">\r\n                    <label for=\"inputDesription\" class=\"col-sm-2 col-form-label\">description</label>\r\n                    <div class=\"col-sm-10\">\r\n                        <textarea  class=\"form-control\" id=\"inputDesription\" placeholder=\"\" rows=\"5\" ng-model=\"channelDay.description\"></textarea>\r\n                    </div>\r\n                </div>\r\n                <div class=\"form-group row\">\r\n                    <div class=\"col-sm-10\">\r\n                        <button type=\"submit\" ng-click=\"addChannelday()\" class=\"btn btn-default\">Ajouter</button>\r\n                    </div>\r\n                </div>\r\n            </form>\r\n            <video style=\"    margin-left: 80px;\" width=\"500\" height=\"300\" id=\"videoID\" controls src=\"\"></video>\r\n        </div>\r\n    </div>\r\n\r\n\r\n\r\n\r\n\r\n\r\n</div>\r\n</div>\r\n</body>\r\n</html>\r\n";
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, '__esModule', {
+	    value: true
+	});
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _edit_buttonHtml = __webpack_require__(152);
+	
+	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
+	
 	//import foto from '../foto.html';
 	
 	exports['default'] = function (nga, admin) {
@@ -18964,13 +19032,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 152 */
-/***/ (function(module, exports) {
-
-	module.exports = "<div class=\"row\">\r\n    <div class=\"btn-group inline pull-right\">\r\n      <div class=\"btn btn-small\"><ma-submit-button class=\"pull-right\" label=\"Submit\"></ma-submit-button></div>\r\n      <div class=\"btn btn-small\"><ma-back-button class=\"pull-right\" label=\"Cancel\"></ma-back-button></div>\r\n    </div>\r\n</div>\r\n\r\n<hr>";
-
-/***/ }),
-/* 153 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19122,7 +19184,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 154 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19151,7 +19213,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 155 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19229,7 +19291,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 156 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19424,7 +19486,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 157 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19499,7 +19561,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 158 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19531,7 +19593,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 159 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19566,7 +19628,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 160 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19625,7 +19687,7 @@
 	                }
 	            }
 	        }
-	    }), nga.field('company_name', 'string').validation({ required: true }).label('Company name').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.company_name"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Set your company name (By default - MAGOWARE)</small>' + '</div>'), nga.field('company_logo', 'file').label('Company logo').template('<div class="row">' + '<div class="col-xs-12 col-sm-1"><img src="{{ entry.values.company_logo }}" height="40" width="40" /></div>' + '<div class="col-xs-12 col-sm-8"><ma-file-field field="field" value="entry.values.company_logo"></ma-file-field></div>' + '</div>' + '<div class="row"><small id="emailHelp" class="form-text text-muted">1920x1080 px, not larger than 1 MB</small></div>').uploadInformation({ 'url': '/file-upload/single-file/settings/company_logo', 'apifilename': 'result' }).validation({ required: true, validator: function validator() {
+	    }), nga.field('company_name', 'string').validation({ required: true }).label('Company name').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.company_name"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Set your company name (By default - HB7Television)</small>' + '</div>'), nga.field('company_logo', 'file').label('Company logo').template('<div class="row">' + '<div class="col-xs-12 col-sm-1"><img src="{{ entry.values.company_logo }}" height="40" width="40" /></div>' + '<div class="col-xs-12 col-sm-8"><ma-file-field field="field" value="entry.values.company_logo"></ma-file-field></div>' + '</div>' + '<div class="row"><small id="emailHelp" class="form-text text-muted">1920x1080 px, not larger than 1 MB</small></div>').uploadInformation({ 'url': '/file-upload/single-file/settings/company_logo', 'apifilename': 'result' }).validation({ required: true, validator: function validator() {
 	            var company_logo = document.getElementById('company_logo');
 	            if (company_logo.value.length > 0) {
 	                if (company_logo.files[0].size > 1048576) {
@@ -19649,7 +19711,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 161 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19684,7 +19746,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 162 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19719,7 +19781,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 163 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19754,7 +19816,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 164 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19779,7 +19841,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 165 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19817,7 +19879,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 166 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19864,7 +19926,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 167 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19899,7 +19961,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 168 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19943,7 +20005,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 169 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20046,7 +20108,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 170 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20142,7 +20204,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 171 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20176,7 +20238,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 172 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20211,7 +20273,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 173 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20252,7 +20314,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 174 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20295,7 +20357,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 175 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20325,7 +20387,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 176 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20395,7 +20457,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 177 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20430,7 +20492,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 178 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20489,7 +20551,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 179 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20543,7 +20605,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 180 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20554,7 +20616,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _epg_logsHtml = __webpack_require__(181);
+	var _epg_logsHtml = __webpack_require__(185);
 	
 	var _epg_logsHtml2 = _interopRequireDefault(_epg_logsHtml);
 	
@@ -20581,13 +20643,13 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 181 */
+/* 185 */
 /***/ (function(module, exports) {
 
 	module.exports = "<!DOCTYPE html>\r\n<html >\r\n<head>\r\n    <title>Simple Invoicing - Built with AngularJS</title>\r\n    <meta charset='utf-8'>\r\n    <meta name=\"description\" content=\"AngularJS and Angular Code Example for creating Invoices and Invoicing Application\">\r\n    <script src=\"https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js\"></script>\r\n    <script type=\"text/javascript\" src=\"js/main.js\"></script>\r\n</head>\r\n<body>\r\n\r\n<div class=\"container\" ng-app=\"myApp\" ng-controller=\"logsCtrl\">\r\n    <div class=\"row\">\r\n        <div class=\"btn-group inline pull-right\">\r\n            <div class=\"btn btn-small\"><see-logs post=\"entry\" class=\"pull-right\" data-method=\"ctrlFn\"></see-logs></div>\r\n            <div class=\"btn btn-small\"><ma-back-button class=\"pull-right\" label=\"Cancel\"></ma-back-button></div>\r\n        </div>\r\n    </div>\r\n    <hr><br/><br/><br/><br/>\r\n\r\n    <div class=\"row\">\r\n        <table class=\"table\">\r\n            <thead>\r\n            <tr>\r\n                <th style=\"border-bottom: none;\">{{records1[0]}}</th>\r\n                <th style=\"border-bottom: none;\">{{records1[1]}}</th>\r\n                <th style=\"border-bottom: none;\">{{records1[2]}}</th>\r\n                <th style=\"border-bottom: none;\">{{records1[3]}}</th>\r\n            </tr>\r\n            </thead>\r\n            <tbody>\r\n            <tr ng-repeat=\"x in records.message\">\r\n                <td>{{x.file_name}}</td>\r\n                <td>{{x.saved_records}}</td>\r\n                <td>{{x.non_saved_records}}</td>\r\n                <td>{{x.error_log}}</td>\r\n            </tr>\r\n            </tbody>\r\n        </table>\r\n    </div>\r\n</div>\r\n\r\n</body>\r\n</html>";
 
 /***/ }),
-/* 182 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20602,7 +20664,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_genre_btnHtml = __webpack_require__(183);
+	var _filter_genre_btnHtml = __webpack_require__(187);
 	
 	var _filter_genre_btnHtml2 = _interopRequireDefault(_filter_genre_btnHtml);
 	
@@ -20641,13 +20703,13 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 183 */
+/* 187 */
 /***/ (function(module, exports) {
 
 	module.exports = "<div class=\"row\">\r\n    <div class=\"btn-group inline pull-right\"> \r\n      <div class=\"btn btn-small\"><ma-filtered-list-button entity-name=\"Channels\" class=\"pull-right\" label=\"SEE ALL CHANNELS\" filter=\"{ genre_id: entry.values.id }\"></ma-filtered-list-button></div> \r\n    </div>\r\n</div>\r\n\r\n<hr>";
 
 /***/ }),
-/* 184 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20765,7 +20827,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 185 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20780,11 +20842,11 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_package_btnHtml = __webpack_require__(186);
+	var _filter_package_btnHtml = __webpack_require__(190);
 	
 	var _filter_package_btnHtml2 = _interopRequireDefault(_filter_package_btnHtml);
 	
-	var _drag_drop_packageDrag_and_drop_templateHtml = __webpack_require__(187);
+	var _drag_drop_packageDrag_and_drop_templateHtml = __webpack_require__(191);
 	
 	var _drag_drop_packageDrag_and_drop_templateHtml2 = _interopRequireDefault(_drag_drop_packageDrag_and_drop_templateHtml);
 	
@@ -20836,19 +20898,19 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 186 */
+/* 190 */
 /***/ (function(module, exports) {
 
 	module.exports = "<div class=\"row\">\r\n    <div class=\"btn-group inline pull-right\"> \r\n      <div class=\"btn btn-small\"><ma-filtered-list-button entity-name=\"packagechannels\" class=\"pull-right\" label=\"SEE ALL CHANNELS\" filter=\"{ package_id: entry.values.id }\"></ma-filtered-list-button></div> \r\n      <div class=\"btn btn-small\"><ma-create-button entity-name=\"packagechannels\" class=\"pull-right\" label=\"ADD CHANNEL\" default-values=\"{ package_id: entry.values.id }\"></ma-create-button></div> \r\n    </div>\r\n</div>\r\n\r\n<hr>";
 
 /***/ }),
-/* 187 */
+/* 191 */
 /***/ (function(module, exports) {
 
-	module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <title>Drag &amp; Drop Lists for angular.js</title>\r\n</head>\r\n<body ng-app=\"myApp\">\r\n\r\n<div ng-controller=\"dragdropctrl\">\r\n    <div class=\"multiDemo row\">\r\n\r\n        <p class=\"text-center bg-default paragraph\">You can select or multiselect Channels from Available list to Selected list and back.</p>\r\n\r\n        <div class=\"col-md-12\">\r\n            <div class=\"row\">\r\n\r\n                <div ng-repeat=\"list in models\" class=\"col-md-6\">\r\n                    <div class=\"panel panel-default\">\r\n                        <div class=\"panel-heading\">\r\n                            <h3 class=\"panel-title text-center\">{{list.listName}}</h3>\r\n                        </div>\r\n                        <div class=\"panel-body\">\r\n                            <input type=\"text\" id=\"usr\" ng-model=\"searchText\" placeholder=\"Search Channel by name or by number...\" />\r\n                            <ul dnd-list dnd-drop=\"onDrop(list, item, index)\">\r\n                                <li ng-repeat=\"item in list.items | filter:searchText\"\r\n                                    dnd-draggable=\"getSelectedItemsIncluding(list, item)\"\r\n                                    dnd-dragstart=\"onDragstart(list, event)\"\r\n                                    dnd-moved=\"onMoved(list)\"\r\n                                    dnd-dragend=\"list.dragging = false\"\r\n                                    dnd-selected=\"item.selected = !item.selected\"\r\n                                    ng-class=\"{'selected': item.selected}\"\r\n                                    ng-hide=\"list.dragging && item.selected\"\r\n                                >\r\n                                    <div style=\"display: none;\">{{item.id}}</div> &nbsp;{{item.nr}}&nbsp;-&nbsp;{{item.label}}\r\n                                </li>\r\n                            </ul>\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div><!--row-->\r\n            <div class=\"row\">\r\n                <div class=\"btn-group inline pull-right\">\r\n                    <div class=\"btn btn-small\"><see-drag post=\"entry\" class=\"pull-right\" data-method=\"ctrlFn\"></see-drag></div>\r\n                    <!--<div class=\"btn btn-small\"><ma-filtered-list-button entity-name=\"packagechannels\" class=\"pull-right\" label=\"SEE ALL CHANNELS\" filter=\"{ package_id: entry.values.id }\"></ma-filtered-list-button></div>-->\r\n                </div>\r\n            </div><!--row-->\r\n            <hr><br/><br/><br/><br/>\r\n        </div><!--col-md-12-->\r\n    </div>\r\n\r\n\r\n\r\n\r\n\r\n\r\n</div>\r\n</body>\r\n</html>";
+	module.exports = "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <title>Drag &amp; Drop Lists for angular.js</title>\r\n</head>\r\n<body ng-app=\"myApp\">\r\n\r\n<div ng-controller=\"dragdropctr\">\r\n    <div class=\"multiDemo row\">\r\n\r\n        <p class=\"text-center bg-default paragraph\">You can select or multiselect Channels from Available list to Selected list and back.</p>\r\n\r\n        <div class=\"col-md-12\">\r\n            <div class=\"row\">\r\n\r\n                <div ng-repeat=\"list in models\" class=\"col-md-6\">\r\n                    <div class=\"panel panel-default\">\r\n                        <div class=\"panel-heading\">\r\n                            <h3 class=\"panel-title text-center\">{{list.listName}}</h3>\r\n                        </div>\r\n                        <div class=\"panel-body\">\r\n                            <input type=\"text\" id=\"usr\" ng-model=\"searchText\" placeholder=\"Search Channel by name or by number...\" />\r\n                            <ul dnd-list dnd-drop=\"onDrop(list, item, index)\">\r\n                                <li ng-repeat=\"item in list.items | filter:searchText\"\r\n                                    dnd-draggable=\"getSelectedItemsIncluding(list, item)\"\r\n                                    dnd-dragstart=\"onDragstart(list, event)\"\r\n                                    dnd-moved=\"onMoved(list)\"\r\n                                    dnd-dragend=\"list.dragging = false\"\r\n                                    dnd-selected=\"item.selected = !item.selected\"\r\n                                    ng-class=\"{'selected': item.selected}\"\r\n                                    ng-hide=\"list.dragging && item.selected\"\r\n                                >\r\n                                    <div style=\"display: none;\">{{item.id}}</div> &nbsp;{{item.nr}}&nbsp;-&nbsp;{{item.label}}\r\n                                </li>\r\n                            </ul>\r\n                        </div>\r\n                    </div>\r\n                </div>\r\n            </div><!--row-->\r\n            <div class=\"row\">\r\n                <div class=\"btn-group inline pull-right\">\r\n                    <div class=\"btn btn-small\"><see-drag post=\"entry\" class=\"pull-right\" data-method=\"ctrlFn\"></see-drag></div>\r\n                    <!--<div class=\"btn btn-small\"><ma-filtered-list-button entity-name=\"packagechannels\" class=\"pull-right\" label=\"SEE ALL CHANNELS\" filter=\"{ package_id: entry.values.id }\"></ma-filtered-list-button></div>-->\r\n                </div>\r\n            </div><!--row-->\r\n            <hr><br/><br/><br/><br/>\r\n        </div><!--col-md-12-->\r\n    </div>\r\n\r\n\r\n\r\n\r\n\r\n\r\n</div>\r\n</body>\r\n</html>";
 
 /***/ }),
-/* 188 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20863,7 +20925,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_package_btnHtml = __webpack_require__(186);
+	var _filter_package_btnHtml = __webpack_require__(190);
 	
 	var _filter_package_btnHtml2 = _interopRequireDefault(_filter_package_btnHtml);
 	
@@ -20882,7 +20944,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 189 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20897,7 +20959,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_package_btnHtml = __webpack_require__(186);
+	var _filter_package_btnHtml = __webpack_require__(190);
 	
 	var _filter_package_btnHtml2 = _interopRequireDefault(_filter_package_btnHtml);
 	
@@ -20924,7 +20986,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 190 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20939,7 +21001,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_genre_btnHtml = __webpack_require__(183);
+	var _filter_genre_btnHtml = __webpack_require__(187);
 	
 	var _filter_genre_btnHtml2 = _interopRequireDefault(_filter_genre_btnHtml);
 	
@@ -20959,7 +21021,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 191 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21002,7 +21064,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 192 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21031,7 +21093,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 193 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21067,7 +21129,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 194 */
+/* 198 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21086,7 +21148,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 195 */
+/* 199 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21105,7 +21167,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 196 */
+/* 200 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21124,7 +21186,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 197 */
+/* 201 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21143,7 +21205,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 198 */
+/* 202 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21162,7 +21224,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 199 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21181,7 +21243,7 @@
 	
 	exports['default'] = function (nga, admin) {
 		var settings = admin.getEntity('Settings');
-		settings.listView().batchActions([]).fields([nga.field('analytics_id', 'string').attributes({ placeholder: 'Analytics ID' }).template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.analytics_id"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Google analytics ID to monitor audience and system logs.</small>' + '</div>').label('Analytics ID'), nga.field('company_name', 'string').validation({ required: true }).label('Company name').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.company_name"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Set your company name (By default - MAGOWARE)</small>' + '</div>'), nga.field('locale', 'string').validation({ required: true }).label('Locale').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.locale"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">User interface language (not in use).</small>' + '</div>'), nga.field('allow_guest_login', 'boolean').label('').template('<form ng-app="myApp" ng-controller="checkboxController">' + '<div class="form-check">' + '<label class="toggle">' + '<input type="checkbox" name="toggle" ng-change="setValueForGuest(checkboxModel.checkbox_value)" ng-model="checkboxModel.checkbox_value"' +
+		settings.listView().batchActions([]).fields([nga.field('analytics_id', 'string').attributes({ placeholder: 'Analytics ID' }).template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.analytics_id"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Google analytics ID to monitor audience and system logs.</small>' + '</div>').label('Analytics ID'), nga.field('company_name', 'string').validation({ required: true }).label('Company name').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.company_name"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">Set your company name (By default - HB7Television)</small>' + '</div>'), nga.field('locale', 'string').validation({ required: true }).label('Locale').template('<div class="form-group">' + '<ma-input-field field="field" value="entry.values.locale"></ma-input-field>' + '<small id="emailHelp" class="form-text text-muted">User interface language (not in use).</small>' + '</div>'), nga.field('allow_guest_login', 'boolean').label('').template('<form ng-app="myApp" ng-controller="checkboxController">' + '<div class="form-check">' + '<label class="toggle">' + '<input type="checkbox" name="toggle" ng-change="setValueForGuest(checkboxModel.checkbox_value)" ng-model="checkboxModel.checkbox_value"' +
 		/*'ng-true-value="true" ng-false-value="false"*/'> <span class="label-text">Allow Guest Login</span>' + '</label>' + '</div>' + '</form>'), nga.field('template').label('').template(_edit_buttonHtml2['default']),
 	
 		//HIDDEN FROM UI
@@ -21202,7 +21264,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 200 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21291,7 +21353,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 201 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21325,7 +21387,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 202 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21358,7 +21420,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 203 */
+/* 207 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -21377,7 +21439,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 204 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21418,7 +21480,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 205 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21433,7 +21495,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_genre_btnHtml = __webpack_require__(183);
+	var _filter_genre_btnHtml = __webpack_require__(187);
 	
 	var _filter_genre_btnHtml2 = _interopRequireDefault(_filter_genre_btnHtml);
 	
@@ -21469,7 +21531,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 206 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21484,7 +21546,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_genre_btnHtml = __webpack_require__(183);
+	var _filter_genre_btnHtml = __webpack_require__(187);
 	
 	var _filter_genre_btnHtml2 = _interopRequireDefault(_filter_genre_btnHtml);
 	
@@ -21509,7 +21571,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 207 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21524,7 +21586,7 @@
 	
 	var _edit_buttonHtml2 = _interopRequireDefault(_edit_buttonHtml);
 	
-	var _filter_genre_btnHtml = __webpack_require__(183);
+	var _filter_genre_btnHtml = __webpack_require__(187);
 	
 	var _filter_genre_btnHtml2 = _interopRequireDefault(_filter_genre_btnHtml);
 	
@@ -21548,7 +21610,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 208 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21577,7 +21639,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 209 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21606,7 +21668,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 210 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21659,7 +21721,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 211 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21829,7 +21891,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 212 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21886,7 +21948,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 213 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21953,7 +22015,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 214 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21982,7 +22044,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 215 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22023,7 +22085,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 216 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22050,7 +22112,7 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 217 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22061,7 +22123,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _resellers_dashboardHtml = __webpack_require__(218);
+	var _resellers_dashboardHtml = __webpack_require__(222);
 	
 	var _resellers_dashboardHtml2 = _interopRequireDefault(_resellers_dashboardHtml);
 	
@@ -22086,13 +22148,13 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 218 */
+/* 222 */
 /***/ (function(module, exports) {
 
 	module.exports = "<div class=\"row dashboard-starter\"></div>\r\n<resellersdashboard-summary></resellersdashboard-summary>\r\n\r\n<graph>\r\n    <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n</graph>\r\n\r\n<div class=\"row dashboard-content\">\r\n\r\n    <div class=\"col-lg-12\">\r\n        <div class=\"panel panel-default theme\">\r\n            <ma-dashboard-panel collection=\"dashboardController.collections.sales_report\" entries=\"dashboardController.entries.sales_report\" datastore=\"dashboardController.datastore\"></ma-dashboard-panel>\r\n        </div>\r\n    </div>\r\n\r\n\r\n    <div class=\"container-fluid\">\r\n        <!--div class=\"col-xs-2 idiqagentstatus-buttonHolders pull-right\">\r\n        <button type=\"button\" class=\"btn btn-xs\" ng-click=\"agentClicked()\">Show hidden Node and change color</button>\r\n      </div-->\r\n        <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n    </div>\r\n\r\n</div>";
 
 /***/ }),
-/* 219 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22103,7 +22165,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _dashboardHtml = __webpack_require__(220);
+	var _dashboardHtml = __webpack_require__(224);
 	
 	var _dashboardHtml2 = _interopRequireDefault(_dashboardHtml);
 	
@@ -22122,19 +22184,19 @@
 	module.exports = exports['default'];
 
 /***/ }),
-/* 220 */
+/* 224 */
 /***/ (function(module, exports) {
 
-	module.exports = "<div class=\"row dashboard-starter\"></div>\r\n<dashboard-summary></dashboard-summary>\r\n\r\n<graph>\r\n    <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n</graph>\r\n\r\n<div class=\"row dashboard-content\">\r\n\r\n    <div class=\"container-fluid\">\r\n        <div class=\"panel panel-default theme\">\r\n            <ma-dashboard-panel collection=\"dashboardController.collections.login_accounts\" entries=\"dashboardController.entries.login_accounts\" datastore=\"dashboardController.datastore\"></ma-dashboard-panel>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"col-lg-12\">\r\n        <div class=\"panel panel-default theme\">\r\n            <ma-dashboard-panel collection=\"dashboardController.collections.sales_report\" entries=\"dashboardController.entries.sales_report\" datastore=\"dashboardController.datastore\"></ma-dashboard-panel>\r\n        </div>\r\n    </div>\r\n\r\n\r\n    <div class=\"container-fluid\">\r\n        <!--div class=\"col-xs-2 idiqagentstatus-buttonHolders pull-right\">\r\n        <button type=\"button\" class=\"btn btn-xs\" ng-click=\"agentClicked()\">Show hidden Node and change color</button>\r\n      </div-->\r\n        <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n    </div>\r\n\r\n    <div class=\"container-fluid\">\r\n\r\n    <span ng-app=\"myApp\" ng-controller=\"DemoCtrl\">\r\n    <button ng-click=\"showDay()\">Day</button>\r\n    <button ng-click=\"showWeek()\">Week</button>\r\n\r\n        <div class=\"row\">\r\n            <div class=\"col-lg-2\">\r\n                <daypilot-navigator id=\"navi\" daypilot-config=\"navigatorConfig\" ></daypilot-navigator>\r\n            </div>\r\n            <div class=\"col-lg-10\">\r\n                <daypilot-calendar id=\"week\" daypilot-config=\"weekConfig\" daypilot-events=\"events\" ></daypilot-calendar>\r\n                <daypilot-calendar id=\"day\" daypilot-config=\"dayConfig\" daypilot-events=\"events\" ></daypilot-calendar>\r\n            </div>\r\n        </div>\r\n        </span>\r\n\r\n    </div>\r\n\r\n\r\n</div>";
+	module.exports = "<div class=\"row dashboard-starter\"></div>\r\n<dashboard-summary></dashboard-summary>\r\n\r\n<graph>\r\n    <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n</graph>\r\n\r\n<div class=\"row dashboard-content\">\r\n\r\n    <div class=\"container-fluid\">\r\n        <div class=\"panel panel-default theme\">\r\n            <ma-dashboard-panel collection=\"dashboardController.collections.login_accounts\" entries=\"dashboardController.entries.login_accounts\" datastore=\"dashboardController.datastore\"></ma-dashboard-panel>\r\n        </div>\r\n    </div>\r\n\r\n    <div class=\"col-lg-12\">\r\n        <div class=\"panel panel-default theme\">\r\n            <ma-dashboard-panel collection=\"dashboardController.collections.sales_report\" entries=\"dashboardController.entries.sales_report\" datastore=\"dashboardController.datastore\"></ma-dashboard-panel>\r\n        </div>\r\n    </div>\r\n\r\n\r\n    <div class=\"container-fluid\">\r\n        <!--div class=\"col-xs-2 idiqagentstatus-buttonHolders pull-right\">\r\n        <button type=\"button\" class=\"btn btn-xs\" ng-click=\"agentClicked()\">Show hidden Node and change color</button>\r\n      </div-->\r\n        <vis-timeline data=\"data\" options=\"options\"></vis-timeline>\r\n    </div>\r\n\r\n\r\n\r\n</div>";
 
 /***/ }),
-/* 221 */
+/* 225 */
 /***/ (function(module, exports) {
 
 	module.exports = "<div class=\"navbar-header\">\r\n    <button type=\"button\" class=\"navbar-toggle\" ng-click=\"isCollapsed = !isCollapsed\">\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n        <span class=\"icon-bar\"></span>\r\n    </button>\r\n    <a class=\"navbar-brand\" href=\"#\" ng-click=\"appController.displayHome()\" ng-app=\"myApp\" ng-controller=\"envVariablesCtrl\">\r\n\r\n        <div class=\"row\">\r\n            <div class=\"col-sm-6\">\r\n                <img src=\"{{company_logo}}\"  class=\"img-responsive logo_company\" alt=\"Company Logo\">\r\n            </div>\r\n            <div class=\"col-sm-6\">\r\n                <p id=\"company_name\">{{company_name}} - Administration System</p>\r\n            </div>\r\n        </div>\r\n    </a>\r\n</div>\r\n\r\n<ul class=\"nav navbar-top-links navbar-right text-center responsive\">\r\n    <li uib-dropdown>\r\n        <a uib-dropdown-toggle href=\"#\" aria-expanded=\"true\" ng-controller=\"username\">\r\n            <i class=\"fa fa-user fa-lg\"></i>&nbsp; {{ username }}&nbsp;<i class=\"fa fa-caret-down\"></i>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-user\" role=\"menu\">\r\n            <li><a href=\"#/personal\" onClick=\"window.location.reload()\"><i class=\"fa fa-user fa-fw\"></i> Personal Details</a></li>\r\n            <li><a href=\"#/change-password\"><i class=\"fa fa-cog fa-fw\"></i> Change Password</a></li>\r\n            <li><a href=\"#\" onclick=\"logout()\"><i class=\"fa fa-sign-out fa-fw\"></i> Logout</a></li>\r\n        </ul>\r\n    </li>\r\n</ul>\r\n\r\n<ul class=\"nav navbar-top-links navbar-right text-center\">\r\n    <li uib-dropdown ng-controller=\"languageCtrl\">\r\n        <a id=\"single-button\" href=\"#\" aria-expanded=\"true\" uib-dropdown-toggle ng-disabled=\"disabled\">\r\n            <i class=\"fa fa-globe fa-lg\"></i>&nbsp; Language {{button}}&nbsp;<i class=\"fa fa-caret-down\"></i>\r\n        </a>\r\n        <ul class=\"dropdown-menu dropdown-user\" role=\"menu\" aria-labelledby=\"single-button\">\r\n            <li role=\"menuitem\">\r\n                <a ng-click=\"serve_language('en');change('English')\"><i class=\"fa fa-sign-out fa-fw\"></i> English</a>\r\n                <a ng-click=\"serve_language('fr');change('French')\"><i class=\"fa fa-sign-out fa-fw\"></i> French</a>\r\n                <a ng-click=\"serve_language('sp');change('Spanish')\"><i class=\"fa fa-sign-out fa-fw\"></i> Spanish</a>\r\n\t\t\t\t<a ng-click=\"serve_language('sq');change('Albanian')\"><i class=\"fa fa-sign-out fa-fw\"></i> Albanian</a>\r\n            </li>\r\n\r\n        </ul>\r\n    </li>\r\n</ul>\r\n\r\n\r\n\r\n";
 
 /***/ }),
-/* 222 */
+/* 226 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -22341,6 +22403,23 @@
 	//     "children": []
 	// },
 	{
+	    "title": "HB7television",
+	    "icon": '<span class="fa fa-television fa-fw"></span>',
+	    "group_roles": ["admin", "administrator", "customercare", "management", "guest"],
+	    "children": [{
+	        "entity": "hb7television",
+	        "title": "Programme",
+	        "icon": '<span class="fa fa-film fa-fw"></span>',
+	        "link": '/hb7television/list',
+	        "group_roles": ["admin", "administrator", "customercare", "management", "guest"]
+	    }, {
+	        "entity": "channel_video",
+	        "title": "Channel videos",
+	        "icon": '<span class="fa fa-film fa-fw"></span>',
+	        "link": '/channel_video/list',
+	        "group_roles": ["admin", "administrator", "customercare", "management", "guest"]
+	    }]
+	}, {
 	    "title": "TV Channels",
 	    "icon": '<span class="fa fa-television fa-fw"></span>',
 	    "group_roles": ["admin", "administrator", "customercare", "management", "guest"],
@@ -22375,12 +22454,6 @@
 	        "link": '/livepackages/list',
 	        "group_roles": ["admin", "administrator", "customercare", "management", "guest"]
 	    }]
-	}, {
-	    "title": "HB7television",
-	    "link": '/hb7television',
-	    "icon": '<span class="fa fa-television fa-fw"></span>',
-	    "group_roles": ["admin", "administrator", "customercare", "management", "guest"],
-	    "children": []
 	}, {
 	    "title": "VOD",
 	    "icon": '<span class="fa fa-film fa-fw"></span>',
@@ -22567,7 +22640,7 @@
 	module.exports = exports["default"];
 
 /***/ }),
-/* 223 */
+/* 227 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -22613,7 +22686,7 @@
 	module.exports = exports["default"];
 
 /***/ }),
-/* 224 */
+/* 228 */
 /***/ (function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

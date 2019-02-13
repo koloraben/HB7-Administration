@@ -384,23 +384,23 @@ img.img-responsive.logo_company {
     background-color: #262262 ;
 }
 .sidebar ul li a.active {
-    background-color: #ec932f;
+    background-color: #09a00b;
 }
 .nav>li>a {
     color: white;
 }
 .nav>li>a:hover {
-    background-color: #ec932f ;
+    background-color: #09a00b ;
     transition: 0.2s;
 }
 .nav>li>a:focus {
-    background-color: #ec932f ;
+    background-color: #09a00b ;
 }
 .sidebar ul li {
     border-bottom: none;
 }
 .menu_space {
-    color: #ec932f ;
+    color: #00ff21 ;
 }
 div#wrapper {
     background: #262262 ;
@@ -449,7 +449,7 @@ p#company_name {
     box-shadow: 0 10px 6px -6px black;
 }
 .nav .open>a, .nav .open>a:focus, .nav .open>a:hover {
-    background-color: #ec932f ;
+    background-color: #09a00b ;
 }
 div#page-wrapper {
     border-left: none;
@@ -465,7 +465,7 @@ div#page-wrapper {
     box-shadow: 1px 1px 4px rgba(0,0,0,.15);
 }
 .theme>.panel-heading{
-    background-color: #ec932f;
+    background-color: #09a00b;
     color: white;
 
 }
@@ -501,12 +501,12 @@ button.btn.btn-default.dropdown-toggle {
     transition: .3s;
 }
 button.btn.btn-default.dropdown-toggle:hover {
-    background-color: #ec932f;
+    background-color: #09a00b;
     color: white;
     border: none;
 }
 button.btn.btn-default.dropdown-toggle:focus {
-    background-color: #ec932f;
+    background-color: #09a00b;
     color: white;
     border: none;
 }
@@ -524,7 +524,7 @@ button.btn.btn-default:focus{
 }
 a.btn.btn-default:hover,button.btn.btn-default:hover {
     color: white;
-    background-color: #ec932f;
+    background-color: #09a00b;
     border: none;
 }
 h4 {
@@ -560,6 +560,6 @@ p#paragraph_vod {
     padding-left: 22px;
 }
 p#paragraph_vod:hover {
-    background-color: #ec932f;
+    background-color: #09a00b;
     color: white;
 }

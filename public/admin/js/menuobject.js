@@ -213,10 +213,22 @@ export default [{
     // },
     {
         "title":"HB7television",
-        "link":'/hb7television',
         "icon":'<span class="fa fa-television fa-fw"></span>',
         "group_roles":["admin","administrator","customercare","management","guest"],
-        "children": []
+        "children": [{
+            "entity":"hb7television",
+            "title":"Programme",
+            "icon":'<span class="fa fa-film fa-fw"></span>',
+            "link":'/hb7television/list',
+            "group_roles":["admin","administrator","customercare","management","guest"]
+        },
+            {
+            "entity":"channel_video",
+            "title":"Channel videos",
+            "icon":'<span class="fa fa-film fa-fw"></span>',
+            "link":'/channel_video/list',
+            "group_roles":["admin","administrator","customercare","management","guest"]
+        }]
     },
     {
         "title":"TV Channels",

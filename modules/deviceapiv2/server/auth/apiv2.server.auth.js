@@ -93,7 +93,7 @@ exports.emptyCredentials = function(req, res, next) {
  * @apiDefine header_auth
  * @apiHeader {String[]} auth Encoded client authentification token. Sample structure, after decoding:
  *
- * {api_version=22, appversion=1.1.4.2, screensize=480x800, appid=2, devicebrand=+SM-G361F+Build/LMY48B, language=eng, ntype=1, app_name=MAGOWARE, device_timezone=2, os=Linux U Android+5.1.1, auth=8yDhVenHT3Mp0O2QCLJFhCUfT73WR1mE2QRc1ZE7J22cRfmskdTmhCk9ssGWhoIBpIzoTEOLIqwl47NaUwLoLZjH1i2WRYaiioIRMqhRvH2FsSuf1YG/FoT9fEw4CrxF, hdmi=false, firmwareversion=LMY48B.G361FXXU1APB1}
+ * {api_version=22, appversion=1.1.4.2, screensize=480x800, appid=2, devicebrand=+SM-G361F+Build/LMY48B, language=eng, ntype=1, app_name=HB7Television, device_timezone=2, os=Linux U Android+5.1.1, auth=8yDhVenHT3Mp0O2QCLJFhCUfT73WR1mE2QRc1ZE7J22cRfmskdTmhCk9ssGWhoIBpIzoTEOLIqwl47NaUwLoLZjH1i2WRYaiioIRMqhRvH2FsSuf1YG/FoT9fEw4CrxF, hdmi=false, firmwareversion=LMY48B.G361FXXU1APB1}
  *
  */
 

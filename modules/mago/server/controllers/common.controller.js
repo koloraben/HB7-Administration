@@ -2,6 +2,7 @@ var fs = require('fs'),
     mkdirp = require('mkdirp'),
     path = require('path'),
     dbModel = require(path.resolve('./config/lib/sequelize'));
+    playlistFolder='/playlist'
 
 var folder;
 
@@ -169,7 +170,8 @@ function updateFile (prev_val,target_paths,delete_files,delete_on)
 
 
 function uploadFile (req, res){
-
+    console.log('req params : ', JSON.stringify(req.params))
+    console.log('req files : ', JSON.stringify(req.files))
     /* get request and upload file informations */
     var tomodel = req.params.model;
     var tofield = req.params.field;

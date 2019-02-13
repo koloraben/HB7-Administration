@@ -4,13 +4,16 @@
         <meta charset="utf-8">
         <title>{{company_name}} - Administration System</title>
         <meta name="viewport" content="width=device-width">
-
         <link rel="stylesheet" href="build/ng-admin.min.css">
         <link rel="stylesheet" href="build/main.css"/>
         <link rel="stylesheet" href="css/custom.css"/>
 
         <link rel="icon" type="image/png" href="favicon.png">
         <link rel="stylesheet" href="build/vis.min.css"/>
+        <link rel="stylesheet" type="text/css"  href="node_modules/angularjs-datepicker/dist/angular-datepicker.css"/>
+         <script src="http://nervgh.github.io/js/es5-shim.min.js"></script>
+
+        <script src="http://nervgh.github.io/js/es5-sham.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
         <script src="build/vis.min.js"></script>
@@ -26,6 +29,7 @@
         <script src="https://cdn.rawgit.com/angular-translate/bower-angular-translate/2.15.2/angular-translate.js"></script>
         <script src="https://cdn.rawgit.com/angular-translate/bower-angular-translate-storage-cookie/2.15.2/angular-translate-storage-cookie.js"></script>
         <script src="https://cdn.rawgit.com/angular-translate/bower-angular-translate-storage-local/2.15.2/angular-translate-storage-local.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.7/es5-shim.min.js"></script>
 
         <script src="https://cdn.rawgit.com/angular-translate/bower-angular-translate-loader-static-files/2.15.2/angular-translate-loader-static-files.js"></script>
 
@@ -33,8 +37,15 @@
 
         <script src='js/drag_drop_package/angular-drag-and-drop-lists.js'></script>
         <script src='build/daypilot-all.min.js'></script>
-
-
+        <script src='js/hb7television/hb7television.controller.js'></script>
+        <script src='js/channel_video/channelVideo.controller.js'></script>
+        <script src='node_modules/ng-file-upload/dist/ng-file-upload-shim.js'></script>
+        <script src='node_modules/ng-file-upload/dist/ng-file-upload.js'></script>
+        <script src='node_modules/moment/min/moment.min.js'></script>
+        <script src='node_modules/angular-moment/angular-moment.min.js'></script>
+        <script src='node_modules/angularjs-datepicker/dist/angular-datepicker.min.js'></script>
+        <script src="angular-locale_fr.js"></script>
+        <script src="angular-locale_fr-fr.js"></script>
     </head>
 
     <body ng-app="myApp" ng-controller="main">
@@ -55,15 +66,6 @@
 
         </script>
 
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-79012733-4', 'auto');
-            ga('send', 'pageview');
-        </script>
 
       </body>
     <div class="se-pre-con"></div>

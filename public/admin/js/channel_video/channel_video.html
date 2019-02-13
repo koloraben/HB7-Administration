@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<style>
+    /**
+ * For the correct positioning of the placeholder element, the dnd-list and
+ * it's children must have position: relative
+ */
+    .typesDemo ul[dnd-list],
+    .typesDemo ul[dnd-list] > li {
+        position: relative;
+        margin-bottom: 6px;
+    }
+    .panel {
+        background-color: #f5f5f5!important;
+    }
+
+
+    .selectFile{
+        height: 90px;
+        background: #F8F8F8;
+        border: 5px dashed #DDD;
+        padding: 1%;
+        padding-left: 16%;
+    }
+    /**
+     * The dnd-list should always have a min-height,
+     * otherwise you can't drop to it once it's empty
+     */
+    .typesDemo ul[dnd-list] {
+        min-height: 42px;
+        padding-left: 0px;
+        background-color:#f5f5f5 ;
+    }
+
+    /**
+     * The dndDraggingSource class will be applied to
+     * the source element of a drag operation. It makes
+     * sense to hide it to give the user the feeling
+     * that he's actually moving it.
+     */
+    .typesDemo ul[dnd-list] .dndDraggingSource {
+        display: none;
+    }
+
+    /**
+     * An element with .dndPlaceholder class will be
+     * added to the dnd-list while the user is dragging
+     * over it.
+     */
+    .typesDemo ul[dnd-list] .dndPlaceholder {
+        display: block;
+        background-color: #ddd;
+        padding: 10px 15px;
+        min-height: 42px;
+    }
+
+    /**
+     * The dnd-lists's child elements currently MUST have
+     * position: relative. Otherwise we can not determine
+     * whether the mouse pointer is in the upper or lower
+     * half of the element we are dragging over. In other
+     * browsers we can use event.offsetY for this.
+     */
+    .typesDemo ul[dnd-list] li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-top-right-radius: 4px;
+        border-top-left-radius: 4px;
+        display: block;
+
+        /* Disable text selection if item is not draggable */
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+    .typesDemo ul[dnd-list] li dnd-nodrag {
+        display: block;
+        padding: 10px 15px;
+    }
+
+    /**
+     * Gender-specifc background
+     */
+    .typesDemo ul[dnd-list] li.background-man {
+        background-color: #CAE0FC;
+    }
+
+    .typesDemo ul[dnd-list] li.background-woman {
+        background-color: #FFE2F5;
+    }
+
+    .typesDemo ul[dnd-list] input.background-man {
+        background-color: #D8E9FF;
+        color: #2F4D99;
+    }
+
+    .typesDemo ul[dnd-list] input.background-woman {
+        background-color: #FFF0FA;
+        color: #D84FA7;
+    }
+
+    /**
+     * Handle positioning
+     */
+    .typesDemo .handle {
+        cursor: move;
+        position: absolute;
+        top: 14px;
+    }
+
+    .typesDemo .name {
+        margin-left: 20px;
+    }
+</style>
+<html>
+
+<body ng-app="myApp" >
+<div ng-controller="channel_video">
+<div class="row dashboard-starter"></div>
+
+
+
+<div ng-controller="channel_video">
+
+    <div class="multiDemo row">
+
+
+        <div class="col-md-6">
+            <datepicker date-format="dd-MM-yyyy" selector="form-control">
+                <div class="input-group" style="    width: 86%;
+    margin-left: -2%;
+    margin-bottom: 3%;">
+                    <input ng-model="channelDay.broadcast_day"  class="form-control" placeholder="Selectioner une date"/>
+                    <span class="input-group-addon" style="cursor: pointer">
+        <i class="fa fa-lg fa-calendar"></i>
+        </span>
+                </div>
+            </datepicker>
+            <div class="row">
+
+                <div class="typesDemo row">
+
+                    <div ng-repeat="list in videoLists" class="col-md-10">
+                        <div class="panel panel-info">
+                            <form class="form-inline" name="form">
+                            <div class="panel-heading selectFile" ngf-pattern=".mp4" ngf-select="upload($file)" ngf-drop="upload($file)" ng-model="file" name="file">
+                                                <h3>Selectionner une video mp4 </h3>
+                            </div>
+                            <div class="progress" style="margin: 0px ;padding: 0px" >
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': file.progressPercentage + '%' }"></div>
+                            </div>
+                            </form>
+                            <ul dnd-list="list.videos">
+
+                                <li ng-repeat="video in list.videos track by $index"
+                                    dnd-draggable="video"
+                                    dnd-type="video.type"
+                                    dnd-effect-allowed="copyMove"
+                                    dnd-disable-if="video.type == 'unknown'"
+                                    dnd-moved="list.videos.splice($index, 1)"
+                                    style="background-color: #CAE0FC;"
+                                >
+
+                                    {{video.name}}
+                                    <button ng-click="deleteVideo($index,video)" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span  aria-hidden="true">&times;</span>
+                                    </button>
+
+
+                                </li>
+
+                                <li class="dndPlaceholder">
+                                    Drop video
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div><!--row-->
+            <br/><br/>
+        </div><!--col-md-12-->
+        <div class="col-md-6">
+            <form>
+                <div class="form-group row">
+                    <label for="inputTitre" class="col-sm-2 col-form-label">Titre</label>
+                    <div class="col-sm-10">
+                        <input  class="form-control" id="inputTitre" ng-model="channelDay.title" placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputAuthor" class="col-sm-2 col-form-label">Auteur</label>
+                    <div class="col-sm-10">
+                        <input  disabled class="form-control" id="inputAuthor" placeholder="" ng-model="channelDay.author">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDate" class="col-sm-2 col-form-label">Date de Diffusion</label>
+                    <div class="col-sm-10">
+                        <input disabled  class="form-control" id="inputDate" placeholder="" ng-model="channelDay.broadcast_day">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="inputDesription" class="col-sm-2 col-form-label">description</label>
+                    <div class="col-sm-10">
+                        <textarea  class="form-control" id="inputDesription" placeholder="" rows="5" ng-model="channelDay.description"></textarea>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" ng-click="addChannelday()" class="btn btn-default">Ajouter</button>
+                    </div>
+                </div>
+            </form>
+            <video style="    margin-left: 80px;" width="500" height="300" id="videoID" controls src=""></video>
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+</div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 var jwt = require('jsonwebtoken'),
     jwtSecret = "thisIsMySecretPasscode",
-    jwtIssuer = "MAGOWARE";
+    jwtIssuer = "HB7Television";
 
 /**
  * Module dependencies.

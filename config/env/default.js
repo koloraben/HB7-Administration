@@ -2,7 +2,7 @@
 
 module.exports = {
   app: {
-    title: 'MAGOWARE',
+    title: 'HB7Television',
     description: 'Magoware Administartion Portal',
     keywords: 'IPTV, Middleware, Backend, Backoffice, ',
     googleAnalyticsTrackingID: process.env.GOOGLE_ANALYTICS_TRACKING_ID || '',

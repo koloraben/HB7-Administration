@@ -1,0 +1,19 @@
+<div class="row dashboard-starter"></div>
+<div class="row dashboard-content" ng-app="myApp" ng-controller="hb7Ctr">
+    <div class="container-fluid">
+    <a class="btn btn-default" ng-click="showDay()">Jour</a>
+    <a class="btn btn-default" ng-click="showWeek()">Semaine</a>
+    <br>
+    <br>
+        <div class="row">
+            <div class="col-lg-2">
+                <daypilot-navigator id="navi" daypilot-config="navigatorConfig" ></daypilot-navigator>
+            </div>
+            <div class="col-lg-10">
+                <daypilot-calendar id="week" daypilot-config="weekConfig" daypilot-events="events" ></daypilot-calendar>
+                <daypilot-calendar id="day" daypilot-config="dayConfig" daypilot-events="events" ></daypilot-calendar>
+            </div>
+        </div>
+    </div>
+
+</div>

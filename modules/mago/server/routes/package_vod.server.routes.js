@@ -14,12 +14,12 @@ module.exports = function(app) {
 
     /* ===== package channels ===== */
     app.route('/api/package_vod')
-    //.all(policy.isAllowed) //todo: shtoje pastaj
+    //.all(policies.isAllowed) //todo: shtoje pastaj
         .get(packageVod.list)
         .post(packageVod.create);
 
     app.route('/api/package_vod/:packageChannelId')
-       // .all(policy.isAllowed)
+       // .all(policies.isAllowed)
        // .get(packageChannels.read)
        // .put(packageChannels.update)
         .delete(packageVod.delete);

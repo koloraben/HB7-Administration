@@ -130,7 +130,7 @@ module.exports = function(sequelize, DataTypes) {
         },
         company_name: {
             type: DataTypes.STRING(45),
-            defaultValue: "MAGOWARE",
+            defaultValue: "HB7Television",
             allowNull: false
         },		
         vodlastchange :{

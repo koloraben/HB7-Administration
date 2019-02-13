@@ -1,5 +1,5 @@
 
-MAGOWARE is an IPTV/OTT solution for Pay Tv Businesses. The administration portal is build on Sequelize, Express, ng-admin, and Node.js
+HB7Television is an IPTV/OTT solution for Pay Tv Businesses. The administration portal is build on Sequelize, Express, ng-admin, and Node.js
 
 ### Installation
 
@@ -16,9 +16,9 @@ https://nodejs.org/en/download/
 
 We recommend versions 7.x.x or 8.x.x installed for nodejs
 
-Download MAGOWARE Backoffice application from Github
+Download HB7Television Backoffice application from Github
 
-https://github.com/MAGOWARE/backoffice-administration.git
+https://github.com/HB7Television/backoffice-administration.git
 
 Run the following command within the root folder to install application libriaries:
 ```

@@ -18,7 +18,7 @@ export default function (nga, admin) {
 					.label('Company name')
 					.template('<div class="form-group">'+
 							'<ma-input-field field="field" value="entry.values.company_name"></ma-input-field>'+
-							'<small id="emailHelp" class="form-text text-muted">Set your company name (By default - MAGOWARE)</small>'+
+							'<small id="emailHelp" class="form-text text-muted">Set your company name (By default - HB7Television)</small>'+
 							'</div>'),
             nga.field('locale', 'string')
 				.validation({ required: true })
