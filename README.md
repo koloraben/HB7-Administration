@@ -8,7 +8,7 @@ HB7Television is an IPTV/OTT solution for Pay Tv Businesses. The administration 
  * Node.js
  * NPM
 
-### Follow these steps to install Magoware  Management System
+### Follow these steps to install backoffice  Management System
 
 Download and install NODE JS from the following link:
 
