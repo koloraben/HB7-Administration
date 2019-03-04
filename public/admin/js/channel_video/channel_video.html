@@ -157,14 +157,16 @@
 
                                 <li ng-repeat="video in list.videos track by $index"
                                     dnd-draggable="video"
-                                    dnd-type="video.type"
                                     dnd-effect-allowed="copyMove"
-                                    dnd-disable-if="video.type == 'unknown'"
-                                    dnd-moved="list.videos.splice($index, 1)"
+                                    dnd-moved="droplist($index)"
                                     style="background-color: #CAE0FC;"
                                 >
 
-                                    {{video.name}}
+                                    {{video.name}}<div>
+                                    <input ng-model="video.ads" ng-click="addVideoToAds(video.ads,$index)" type="checkbox" id="$index" name="ads"
+                                           checked>
+                                    <label for="$index">Ads</label>
+                                </div>
                                     <button ng-click="deleteVideo($index,video)" type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span  aria-hidden="true">&times;</span>
                                     </button>

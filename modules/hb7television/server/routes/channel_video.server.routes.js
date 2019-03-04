@@ -10,9 +10,9 @@ module.exports = function(app) {
 
     app.route('/api/channel_video')
         .get(channelVideo.list)
-        .post(channelVideo.create)
+        .post(multipartyMiddleware,channelVideo.create)
 
-    app.route('/api/channel_video/upload')
+    /*app.route('/api/channel_video/upload')
     //.all(policy.isAllowed)
-        .post(multipartyMiddleware, channelVideo.upload);
+        .post( channelVideo.upload);*/
 };

@@ -41,6 +41,10 @@ module.exports = function(sequelize, DataTypes) {
         out: {
             type: DataTypes.STRING(10),
             allowNull: false
+        },
+        ads: {
+            type: DataTypes.STRING(10),
+            allowNull: false
         }
     }, {
         tableName: 'channel_video',

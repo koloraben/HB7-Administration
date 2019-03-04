@@ -23,7 +23,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         broadcast_day: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: false,
+            unique: true
         }
     }, {
         tableName: 'channel_day',

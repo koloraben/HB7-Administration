@@ -3,12 +3,39 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
         $scope.channelDay={};
         $scope.channelDay.author=$window.localStorage.userName;
         $scope.videoLists = [ {videos: []}];
+        $scope.files=[]
+        $scope.video={}
+        //$scope.video.ads=false
         $scope.addChannelday = function(){
-            $http.post('http://localhost:8001/api/channel_video',{channelDay:$scope.channelDay,videos:$scope.videoLists[0].videos}).then(function (result) {
+            /*$http.post('http://localhost:8001/api/channel_video',{channelDay:$scope.channelDay,videos:$scope.videoLists[0].videos,files:$scope.files}).then(function (result) {
+                console.log('contenue channelDay :  ',$scope.channelDay)
+                console.log('contenue videos :  ',$scope.videoLists[0].videos)
                 notification.log('Success', { addnCls: 'humane-flatty-success' })
+                console.log('resultat d ajout :  ',result)
             },function () {
 
-            })
+            })*/
+            console.log('channelDay done ',$scope.files)
+            Upload.upload({
+                url: 'http://localhost:8001/api/channel_video',
+                data: {file: $scope.files,details:{channelDay:$scope.channelDay}}
+
+            }).then(function (resp) {
+                notification.log('Success', { addnCls: 'humane-flatty-success' })
+
+            }, function (resp) {
+            }, function (evt) {
+            });
+
+
+        }
+        $scope.addVideoToAds=function (val,indx) {
+            console.log("see ads",val)
+            console.log("see indx",indx)
+            $scope.files[indx].ads=val
+            console.log("see files",$scope.files)
+
+
         }
         $scope.$watch('videoLists', function(model) {
 
@@ -22,12 +49,31 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
         $scope.showProgressBar = function(progress) {
             return true
         };
+
+        $scope.droplist=function (index) {
+            $scope.videoLists[0].videos.splice(index, 1)
+            console.log('listes des videos',$scope.videoLists[0].videos)
+        }
         // upload on file select or drop
         $scope.upload = function (file) {
+
             Upload.dataUrl(file, false).then(function(url){
                 document.querySelector('#videoID').setAttribute("src",url);
+
+                console.log('listes des videos',$scope.files)
+                if(file!=null){
+                    $scope.videoLists[0].videos.push({
+                        name:file.name
+                    });
+                    $scope.files.push({
+                        file:file,
+                        ads:false
+                    })
+                    console.log('listes des videos',$scope.files)
+                }
             });
-            Upload.upload({
+
+            /*Upload.upload({
                 url: 'http://localhost:8001/api/channel_video/upload',
                 data: {file: file}
             }).then(function (resp) {
@@ -44,7 +90,7 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
             }, function (evt) {
                 file.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 console.log('progress: ' + file.progressPercentage + '% ' + evt.config.data.file.name);
-            });
+            });*/
         };
 
         $scope.deleteVideo = function (index,video) {
