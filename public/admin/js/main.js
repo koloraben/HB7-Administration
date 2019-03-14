@@ -1,5 +1,5 @@
 'use strict'
-var myApp = angular.module('myApp', ['720kb.datepicker','ng-admin','angularMoment','ngFileUpload','daypilot','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
+var myApp = angular.module('myApp', ['psi.sortable','720kb.datepicker','ng-admin','angularMoment','ngFileUpload','daypilot','ng-admin.jwt-auth', 'ngVis', 'pascalprecht.translate', 'ngCookies','dndLists']);
 myApp.controller('envVariablesCtrl', ['$scope', '$http', function ($scope, $http) {
     $http.get('../api/env_settings').then(function(response) {
         $scope.version_number = "Version: "+response.data.backoffice_version;

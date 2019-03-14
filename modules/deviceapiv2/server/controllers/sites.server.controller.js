@@ -197,7 +197,7 @@ exports.confirmNewAccountToken = function(req, res) {
             }, include: [{model:db.combo_packages,include:[db.package]}]
         }).then(function(combo) {
             if (!combo)
-				return res.status(404).send('Account confirmed, you can proceed to login. Contact Magoware support to get your first subscription for free.');
+				return res.status(404).send('Account confirmed, you can proceed to login. Contact HB7 TV support to get your first subscription for free.');
             else {
                 // Load Customer by LoginID
                 login_data.findOne({
@@ -223,7 +223,7 @@ exports.confirmNewAccountToken = function(req, res) {
 
                         // Saving Subscription
                         subscription.create(sub).then(function(savedSub) {
-                            if (!savedSub) return res.status(400).send('Account confirmed, you can proceed to login. Contact Magoware support to get your first subscription for free.');
+                            if (!savedSub) return res.status(400).send('Account confirmed, you can proceed to login. Contact HB7 TV support to get your first subscription for free.');
                         })
                     });
 
@@ -238,7 +238,7 @@ exports.confirmNewAccountToken = function(req, res) {
                     };
                     SalesData.create(sData)
                         .then(function(salesData){
-                            if (!salesData) return res.status(400).send('Account confirmed, you can proceed to login. Check with Magoware support to make sure you are subscribed to our free packages');
+                            if (!salesData) return res.status(400).send('Account confirmed, you can proceed to login. Check with HB7 TV support to make sure you are subscribed to our free packages');
 							else return res.status(400).send('Account confirmed, you can proceed to login.');
                         });
                 });

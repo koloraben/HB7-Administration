@@ -43,7 +43,8 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         ads: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.BOOLEAN,
+            defaultValue: 0,
             allowNull: false
         }
     }, {

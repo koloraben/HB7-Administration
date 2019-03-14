@@ -4,8 +4,11 @@
  * For the correct positioning of the placeholder element, the dnd-list and
  * it's children must have position: relative
  */
-    .typesDemo ul[dnd-list],
-    .typesDemo ul[dnd-list] > li {
+    .sortabla{
+        cursor:move;
+    }
+    .typesDemo ul[psi-sortable],
+    .typesDemo ul[psi-sortable] > li {
         position: relative;
         margin-bottom: 6px;
     }
@@ -25,7 +28,7 @@
      * The dnd-list should always have a min-height,
      * otherwise you can't drop to it once it's empty
      */
-    .typesDemo ul[dnd-list] {
+    .typesDemo ul[psi-sortable] {
         min-height: 42px;
         padding-left: 0px;
         background-color:#f5f5f5 ;
@@ -37,7 +40,7 @@
      * sense to hide it to give the user the feeling
      * that he's actually moving it.
      */
-    .typesDemo ul[dnd-list] .dndDraggingSource {
+    .typesDemo ul[psi-sortable] .dndDraggingSource {
         display: none;
     }
 
@@ -46,7 +49,7 @@
      * added to the dnd-list while the user is dragging
      * over it.
      */
-    .typesDemo ul[dnd-list] .dndPlaceholder {
+    .typesDemo ul[psi-sortable] .dndPlaceholder {
         display: block;
         background-color: #ddd;
         padding: 10px 15px;
@@ -60,7 +63,7 @@
      * half of the element we are dragging over. In other
      * browsers we can use event.offsetY for this.
      */
-    .typesDemo ul[dnd-list] li {
+    .typesDemo ul[psi-sortable] li {
         background-color: #fff;
         border: 1px solid #ddd;
         border-top-right-radius: 4px;
@@ -76,7 +79,7 @@
         user-select: none;
     }
 
-    .typesDemo ul[dnd-list] li dnd-nodrag {
+    .typesDemo ul[psi-sortable] li dnd-nodrag {
         display: block;
         padding: 10px 15px;
     }
@@ -84,20 +87,20 @@
     /**
      * Gender-specifc background
      */
-    .typesDemo ul[dnd-list] li.background-man {
+    .typesDemo ul[psi-sortable] li.background-man {
         background-color: #CAE0FC;
     }
 
-    .typesDemo ul[dnd-list] li.background-woman {
+    .typesDemo ul[psi-sortable] li.background-woman {
         background-color: #FFE2F5;
     }
 
-    .typesDemo ul[dnd-list] input.background-man {
+    .typesDemo ul[psi-sortable] input.background-man {
         background-color: #D8E9FF;
         color: #2F4D99;
     }
 
-    .typesDemo ul[dnd-list] input.background-woman {
+    .typesDemo ul[psi-sortable] input.background-woman {
         background-color: #FFF0FA;
         color: #D84FA7;
     }
@@ -114,6 +117,9 @@
     .typesDemo .name {
         margin-left: 20px;
     }
+</style>
+<style>
+
 </style>
 <html>
 
@@ -143,7 +149,7 @@
 
                 <div class="typesDemo row">
 
-                    <div ng-repeat="list in videoLists" class="col-md-10">
+                    <div  class="col-md-10">
                         <div class="panel panel-info">
                             <form class="form-inline" name="form">
                             <div class="panel-heading selectFile" ngf-pattern=".mp4" ngf-select="upload($file)" ngf-drop="upload($file)" ng-model="file" name="file">
@@ -153,29 +159,26 @@
                                 <div class="progress-bar" role="progressbar" ng-style="{ 'width': file.progressPercentage + '%' }"></div>
                             </div>
                             </form>
-                            <ul dnd-list="list.videos">
+                            <ul psi-sortable="" ng-model="videoLists"   class="sortabla">
 
-                                <li ng-repeat="video in list.videos track by $index"
+                                <li ng-repeat="video in videoLists track by $index"
                                     dnd-draggable="video"
-                                    dnd-effect-allowed="copyMove"
                                     dnd-moved="droplist($index)"
                                     style="background-color: #CAE0FC;"
                                 >
-
-                                    {{video.name}}<div>
-                                    <input ng-model="video.ads" ng-click="addVideoToAds(video.ads,$index)" type="checkbox" id="$index" name="ads"
-                                           checked>
-                                    <label for="$index">Ads</label>
-                                </div>
                                     <button ng-click="deleteVideo($index,video)" type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span  aria-hidden="true">&times;</span>
                                     </button>
+                                    <div class="align-items-center ">
+                                        <strong class="text-gray-dark">{{video.name}}</strong>
+
+                                </div>
+                                    <input ng-model="video.ads" ng-click="addVideoToAds(video.ads,$index)" type="checkbox" name="ads"
+                                           checked>
+                                    <label >Ads</label>
 
 
-                                </li>
 
-                                <li class="dndPlaceholder">
-                                    Drop video
                                 </li>
 
                             </ul>
@@ -226,12 +229,8 @@
         </div>
     </div>
 
-
-
-
-
-
 </div>
 </div>
+
 </body>
 </html>

@@ -111,7 +111,7 @@ exports.update_user_data = function(req, res) {
             }).then(function(template_result) {
 
                 if(!template_result){
-                    var email_body = 'Dear '+customer_data.firstname+' '+customer_data.lastname+', the email address associated to your Magoware account has been changed to '+req.body.email;
+                    var email_body = 'Dear '+customer_data.firstname+' '+customer_data.lastname+', the email address associated to your HB7 TV account has been changed to '+req.body.email;
                 }else {
                     var content_from_ui = template_result.content;
                     var email_body = content_from_ui.replace(new RegExp('{{customer_data.firstname}}', 'gi'), customer_data.firstname).replace(new RegExp('{{customer_data.lastname}}', 'gi'), customer_data.lastname).replace(new RegExp('{{req.body.email}}', 'gi'), req.body.email);

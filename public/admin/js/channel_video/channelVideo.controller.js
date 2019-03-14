@@ -2,7 +2,7 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
     function ($scope,$http,Upload,notification,$uibModal,moment,$window,$rootScope) {
         $scope.channelDay={};
         $scope.channelDay.author=$window.localStorage.userName;
-        $scope.videoLists = [ {videos: []}];
+        $scope.videoLists = [];
         $scope.files=[]
         $scope.video={}
         //$scope.video.ads=false
@@ -15,10 +15,10 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
             },function () {
 
             })*/
-            console.log('channelDay done ',$scope.files)
+            //console.log('channelDay done ',$scope.files)
             Upload.upload({
                 url: 'http://localhost:8001/api/channel_video',
-                data: {file: $scope.files,details:{channelDay:$scope.channelDay}}
+                data: {file: $scope.videoLists,details:{channelDay:$scope.channelDay}}
 
             }).then(function (resp) {
                 notification.log('Success', { addnCls: 'humane-flatty-success' })
@@ -29,48 +29,41 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
 
 
         }
+
         $scope.addVideoToAds=function (val,indx) {
             console.log("see ads",val)
             console.log("see indx",indx)
-            $scope.files[indx].ads=val
-            console.log("see files",$scope.files)
+            $scope.videoLists[indx].ads=val
+            console.log("see $scope.videoLists[0].videos[indx].ads ::",$scope.videoLists[indx].ads)
 
 
         }
-        $scope.$watch('videoLists', function(model) {
 
-        }, true);
         // Model to JSON for demo purpose
-        $scope.submit = function() {
-            if ($scope.form.file.$valid && $scope.file) {
-                $scope.upload($scope.file);
-            }
-        };
+
         $scope.showProgressBar = function(progress) {
             return true
         };
 
-        $scope.droplist=function (index) {
-            $scope.videoLists[0].videos.splice(index, 1)
-            console.log('listes des videos',$scope.videoLists[0].videos)
-        }
+        $scope.$watch('videoLists', function(model) {
+            console.log("videoLists :", angular.toJson(model, true));
+        }, true);
+
         // upload on file select or drop
         $scope.upload = function (file) {
+            if(file!=null){
+                $scope.videoLists.push({
+                    file:file,
+                    name:file.name,
+                    ads:false
+                });
 
+            }
             Upload.dataUrl(file, false).then(function(url){
                 document.querySelector('#videoID').setAttribute("src",url);
 
-                console.log('listes des videos',$scope.files)
-                if(file!=null){
-                    $scope.videoLists[0].videos.push({
-                        name:file.name
-                    });
-                    $scope.files.push({
-                        file:file,
-                        ads:false
-                    })
-                    console.log('listes des videos',$scope.files)
-                }
+                //console.log('listes des videos',$scope.files)
+
             });
 
             /*Upload.upload({
@@ -94,7 +87,8 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
         };
 
         $scope.deleteVideo = function (index,video) {
-            $scope.videoLists[0].videos.splice(index, 1)
+            console.log('video Deleted: ' + video.name);
+            $scope.videoLists.splice(index, 1)
             
         }
         
