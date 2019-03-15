@@ -25,6 +25,8 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
 
             }, function (resp) {
             }, function (evt) {
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + $scope.progressPercentage + '% ' + evt.config.data.file.name);
             });
 
 
