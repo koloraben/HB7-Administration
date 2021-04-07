@@ -43,7 +43,7 @@ function copyFile(sourcePath, destPath, cb, moveFlag){
     source.pipe(dest);
     source.on('end', function() {
         if (moveFlag)
-            fs.unlink(sourcePath);
+            fs.unlinkSync(sourcePath);
         cb();
     });
     source.on('error', function(err) { cb(err)});

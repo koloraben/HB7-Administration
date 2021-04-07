@@ -81,21 +81,23 @@ function get_file_extention(fileName){
 }
 
 function generateEvents(result) {
+
     let events = []
     for (const channel_day of result) {
-        if(channel_day.channel_videos)
-            var broadcast_day = new Date(channel_day.broadcast_day);
-        console.log("bbbbbbbbb : ",broadcast_day)
-        console.log("brooo :" , channel_day.channel_videos.length)
+        var start = 28800;
+        channel_day.channel_videos.sort(((a, b) => parseInt(a.order)-parseInt(b.order)))
+        if(channel_day.channel_videos) var broadcast_day = new Date(channel_day.broadcast_day);
         for (const channel_video of channel_day.channel_videos) {
+
             var event={}
             event.id = channel_video.id
             event.text = channel_video.title
-            broadcast_day.setSeconds(channel_video.begin);
-            event.start = moment(broadcast_day).format('YYYY-MM-DDTHH:mm:ss').toString()
+            broadcast_day.setSeconds(start);
+            start += Math.floor(parseFloat(channel_video.dur));
+            event.start =  moment(broadcast_day).format('YYYY-MM-DDTHH:mm:ss').toString()
             broadcast_day = new Date(channel_day.broadcast_day)
             console.log("start : ",event.start)
-            broadcast_day.setSeconds(parseInt(channel_video.begin)+Math.floor(parseFloat(channel_video.dur)))
+            broadcast_day.setSeconds(start)
             event.end = moment(broadcast_day).format('YYYY-MM-DDTHH:mm:ss')
             broadcast_day = new Date(channel_day.broadcast_day)
             event.description = channel_video.description
@@ -116,7 +118,6 @@ exports.listevent = function(req, res) {
     var searchStartDate = addDays(date,-4)
     var searchEndDate = addDays(date,4)
     DBModel.findAll({include: [ {model:db.channel_video} ],where:{broadcast_day:{$between:[searchStartDate,searchEndDate]}}}).then(function (result) {
-        //console.log("////////////////",result[0],result[1])
         res.send(generateEvents(result))
     }).catch(function (err) {
         console.log('eroor db :',err)
@@ -125,7 +126,6 @@ exports.listevent = function(req, res) {
 exports.upload = function uploadFile (req, res){
     console.log('req params : ', JSON.stringify(req.params))
     console.log('req files : ', JSON.stringify(req.files))
-    /* get request and upload file informations */
     var tomodel = 'model';
     var tofield = 'field';
     var existingfile = path.resolve('./public'+req.app.locals.settings[tofield]);

@@ -11,6 +11,9 @@ module.exports = function(app) {
     app.route('/api/devices')
         .get(devices.list);
 
+    app.route('/api/validation/serial')
+        .get(devices.validateCode);
+
     app.route('/api/devices')
         .all(policy.isAllowed)
         .post(devices.create);

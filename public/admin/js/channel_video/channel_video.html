@@ -134,17 +134,22 @@
     <div class="multiDemo row">
 
 
-        <div class="col-md-6">
-            <datepicker date-format="dd-MM-yyyy" selector="form-control">
-                <div class="input-group" style="    width: 86%;
+        <div class="col-md-6" >
+
+            <div class="input-group" style="    width: 86%;
     margin-left: -2%;
-    margin-bottom: 3%;">
-                    <input ng-model="channelDay.broadcast_day"  class="form-control" placeholder="Selectioner une date"/>
-                    <span class="input-group-addon" style="cursor: pointer">
+    margin-bottom: 3%;"
+                 moment-picker="channelDay.broadcast_day"
+                 locale="fr"
+                 format="DD-MM-YYYY">
+                <input class="form-control"
+                       placeholder="Selectioner une date"
+                       ng-model="channelDay.broadcast_day"
+                       ng-model-options="{ updateOn: 'blur' }">
+                <span class="input-group-addon" style="cursor: pointer">
         <i class="fa fa-lg fa-calendar"></i>
         </span>
-                </div>
-            </datepicker>
+            </div>
             <div class="row">
 
                 <div class="typesDemo row">
@@ -156,7 +161,7 @@
                                                 <h3>Selectionner une video mp4 </h3>
                             </div>
                             <div class="progress" style="margin: 0px ;padding: 0px" >
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': progressPercentage + '%' }"></div>
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': progressPercentage + '%' }">{{progressPercentage+'%'}}</div>
                             </div>
                             </form>
                             <ul psi-sortable="" ng-model="videoLists"   class="sortabla">
@@ -221,11 +226,11 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-sm-10">
-                        <button type="submit" ng-click="addChannelday()" class="btn btn-default">Ajouter</button>
+                        <button type="submit" ng-click="addChannelday()" ng-disabled="videoLists.length==0" class="btn btn-default">Ajouter</button>
                     </div>
                 </div>
             </form>
-            <video style="    margin-left: 80px;" width="500" height="300" id="videoID" controls src=""></video>
+
         </div>
     </div>
 

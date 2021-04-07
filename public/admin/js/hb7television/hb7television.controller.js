@@ -15,7 +15,7 @@ angular.module('myApp').controller('hb7Ctr',['$scope', '$http','Upload','notific
         $http.post("http://localhost:8001/api/hb7television/events", data).then(function (response,data, status, headers, config,file) {
             $scope.events=response.data;
             //notification.log('Channels successfully added', { addnCls: 'humane-flatty-success' });
-            console.log("data",response)
+            //console.log("data",response)
 
         },function (data, status, headers, config) {
             notification.log('Something Wrong', { addnCls: 'humane-flatty-error' });
@@ -99,11 +99,11 @@ angular.module('myApp').controller('hb7Ctr',['$scope', '$http','Upload','notific
                 '    </tr>\n' +
                 '    <tr>\n' +
                 '      <th scope="row">heur de début</td>\n' +
-                '      <td>'+moment(new Date(eventVideo.data.start)).format("HH:mm")+'</td>\n' +
+                '      <td>'+moment(new Date(eventVideo.data.start)).format("HH:mm:ss")+'</td>\n' +
                 '    </tr>\n' +
                 '    <tr>\n' +
                 '      <th scope="row">heur de fin</td>\n' +
-                '      <td>'+moment(new Date(eventVideo.data.end)).format("HH:mm")+'</td>\n' +
+                '      <td>'+moment(new Date(eventVideo.data.end)).format("HH:mm:ss")+'</td>\n' +
                 '    </tr>\n' +
                 '    <tr>\n' +
                 '      <th scope="row">Durée</td>\n' +

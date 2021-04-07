@@ -1,13 +1,19 @@
-angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','notification','$uibModal','moment','$window','$rootScope',
-    function ($scope,$http,Upload,notification,$uibModal,moment,$window,$rootScope) {
+angular.module('myApp').controller('channel_video',['$scope', '$location', '$http','Upload','notification','$uibModal','moment','$window','$rootScope',
+    function ($scope,$location,$http,Upload,notification,$uibModal,moment,$window,$rootScope) {
         $scope.channelDay={};
+        $scope.channelDay.broadcast_day=moment().format('DD-MM-YYYY');
         $scope.channelDay.author=$window.localStorage.userName;
         $scope.videoLists = [];
         $scope.files=[]
         $scope.video={}
         //$scope.video.ads=false
         $scope.addChannelday = function(){
-            /*$http.post('http://localhost:8001/api/channel_video',{channelDay:$scope.channelDay,videos:$scope.videoLists[0].videos,files:$scope.files}).then(function (result) {
+        
+        function ordering(video, index){
+                video.order = index;
+            }
+            $scope.videoLists.forEach(ordering)
+            /*$http.post('http://5.196.74.69:8001/api/channel_video',{channelDay:$scope.channelDay,videos:$scope.videoLists[0].videos,files:$scope.files}).then(function (result) {
                 console.log('contenue channelDay :  ',$scope.channelDay)
                 console.log('contenue videos :  ',$scope.videoLists[0].videos)
                 notification.log('Success', { addnCls: 'humane-flatty-success' })
@@ -22,7 +28,7 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
 
             }).then(function (resp) {
                 notification.log('Success', { addnCls: 'humane-flatty-success' })
-
+                $location.path('/hb7television/list');
             }, function (resp) {
             }, function (evt) {
                 $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
@@ -57,35 +63,13 @@ angular.module('myApp').controller('channel_video',['$scope', '$http','Upload','
                 $scope.videoLists.push({
                     file:file,
                     name:file.name,
-                    ads:false
+                    ads:false,
+                    order:$scope.videoLists.length
                 });
-
             }
             Upload.dataUrl(file, false).then(function(url){
                 document.querySelector('#videoID').setAttribute("src",url);
-
-                //console.log('listes des videos',$scope.files)
-
             });
-
-            /*Upload.upload({
-                url: 'http://localhost:8001/api/channel_video/upload',
-                data: {file: file}
-            }).then(function (resp) {
-                notification.log('Success', { addnCls: 'humane-flatty-success' })
-                $scope.videoLists[0].videos.push({
-                    name:resp.data.result.title,
-                    id:resp.data.result.id,
-                    dur:resp.data.result.dur,
-                    order: 1
-                });
-                console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-            }, function (resp) {
-                console.log('Error status: ' + resp.status);
-            }, function (evt) {
-                file.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                console.log('progress: ' + file.progressPercentage + '% ' + evt.config.data.file.name);
-            });*/
         };
 
         $scope.deleteVideo = function (index,video) {

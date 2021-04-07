@@ -143,11 +143,6 @@ exports.list = function(req, res) {
 
   if(query.customer_id) qwhere.customer_id = query.customer_id;
   if(query.login_id) qwhere.id = query.login_id;
-  if(query.q) {
-    qwhere.$or = {};
-    qwhere.$or.username = {};
-    qwhere.$or.username.$like = '%'+query.q+'%';
-  }
 
   //start building where
   final_where.where = qwhere;
@@ -205,10 +200,7 @@ exports.latest = function(req, res) {
 exports.dataByID = function(req, res, next, id) {
   DBModel.findOne({
     where: {
-        $or: {
-            id: id,
-            username: id
-        }
+        id: id,
     },
     include: [{model: db.customer_data}]
   }).then(function(result) {

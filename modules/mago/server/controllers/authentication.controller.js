@@ -3,10 +3,11 @@
 var jwt = require('jsonwebtoken'),
     jwtSecret = "thisIsMySecretPasscode",
     jwtIssuer = "HB7Television";
-
+var refreshTokens = {}
 /**
  * Module dependencies.
  */
+var randtoken = require('rand-token')
 var path = require('path'),
     errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller')),
     db = require(path.resolve('./config/lib/sequelize')).models,
@@ -31,32 +32,32 @@ var path = require('path'),
  * @apiError (40x) {String} message wrong username or password
  */
 
-exports.authenticate = function(req, res) {
+exports.authenticate = function (req, res) {
     var authBody = req.body;
     DBModel.findOne(
         {
             where: {
                 username: authBody.username
             },
-            include: [{model:db.groups, required: true}]
+            include: [{model: db.groups, required: true}]
         }
-    ).then(function(result){
+    ).then(function (result) {
         if (!result) {
             return res.status(404).send({
                 message: 'UserName or Password does not match'
             });
         } else {
 
-            if(!result.authenticate(authBody.password)) {
+            if (!result.authenticate(authBody.password)) {
                 return res.status(401).send({
                     message: 'UserName or Password does not match'
                 });
 
             }
             var group = {};
-            if(result.group){
+            if (result.group) {
                 group = result.group.code;
-            }else{
+            } else {
                 group = "guest"; // Defaulting to GUEST group
             }
 
@@ -68,26 +69,85 @@ exports.authenticate = function(req, res) {
                     //username: result.username,
                     uid: result.id,
                     role: group
-                }, jwtSecret,{
+                }, jwtSecret, {
                     expiresIn: "4h"
                 });
-            res.json({token:token});
+            var refreshToken = randtoken.uid(256)
+            refreshTokens[refreshToken] = result.username
+            res.json({token: token, refreshToken: refreshToken});
         }
-    }).catch(function(err) {
+    }).catch(function (err) {
         res.jsonp(err);
     });
 };
 
-exports.get_personal_details = function(req, res) {
+exports.token = function (req, res) {
+    var username = req.body.username
+    var refreshToken = req.body.refreshToken
+    if((refreshToken in refreshTokens) && (refreshTokens[refreshToken] == username)) {
+        refreshTokens[refreshToken]=null;
+        var authBody = req.body;
+        DBModel.findOne(
+            {
+                where: {
+                    username: authBody.username
+                },
+                include: [{model: db.groups, required: true}]
+            }
+        ).then(function (result) {
+            if (!result) {
+                return res.status(404).send({
+                    message: 'UserName or Password does not match'
+                });
+            } else {
+
+                if (!result.authenticate(authBody.password)) {
+                    return res.status(401).send({
+                        message: 'UserName or Password does not match'
+                    });
+
+                }
+                var group = {};
+                if (result.group) {
+                    group = result.group.code;
+                } else {
+                    group = "guest"; // Defaulting to GUEST group
+                }
+
+                var token = jwt.sign(
+                    {
+                        id: result.id,
+                        iss: jwtIssuer,
+                        sub: result.username,
+                        //username: result.username,
+                        uid: result.id,
+                        role: group
+                    }, jwtSecret, {
+                        expiresIn: "4h"
+                    });
+                var refreshToken = randtoken.uid(256)
+                refreshTokens[refreshToken] = result.username
+                res.json({token: token, refreshToken: refreshToken});
+            }
+        }).catch(function (err) {
+            res.jsonp(err);
+        });
+    }
+    else {
+        res.send(401)
+    }
+};
+
+exports.get_personal_details = function (req, res) {
     DBModel.findOne(
         {
             where: {
                 username: req.token.sub
             }
         }
-    ).then(function(result){
+    ).then(function (result) {
         res.send(result);
-    }).catch(function(err) {
+    }).catch(function (err) {
         return res.status(404).send({
             message: 'User not found'
         });
@@ -97,24 +157,23 @@ exports.get_personal_details = function(req, res) {
 /**
  * Update
  */
-exports.update_personal_details = function(req, res) {
+exports.update_personal_details = function (req, res) {
 
     DBModel.findOne({
         where: {username: req.token.sub}
-    }).then(function(result) {
+    }).then(function (result) {
 
-        if(result) {
+        if (result) {
             result.updateAttributes(req.body)
-                .then(function(result) {
+                .then(function (result) {
                     res.json(result);
                 })
-                .catch(function(err) {
+                .catch(function (err) {
                     return res.status(500).send({
                         message: errorHandler.getErrorMessage(err)
                     });
                 });
-        }
-        else {
+        } else {
             return res.status(404).send({
                 message: 'User not found'
             });
@@ -125,25 +184,25 @@ exports.update_personal_details = function(req, res) {
 /**
  * Change Password
  */
-exports.changepassword1 = function(req, res, next) {
+exports.changepassword1 = function (req, res, next) {
     // Init Variables
     var passwordDetails = req.body;
     var message = null;
 
     if (req.token) {
         if (passwordDetails.newPassword) {
-            DBModel.findById(req.token.uid).then(function(user) {
+            DBModel.findById(req.token.uid).then(function (user) {
                 if (user) {
                     if (user.authenticate(passwordDetails.currentPassword)) {
                         if (passwordDetails.newPassword === passwordDetails.verifyPassword) {
-                            user.hashedpassword = user.encryptPassword(passwordDetails.newPassword,user.salt);
+                            user.hashedpassword = user.encryptPassword(passwordDetails.newPassword, user.salt);
                             user.save()
-                                .then(function() {
+                                .then(function () {
                                     res.send({
                                         message: 'Password changed successfully'
                                     });
                                 })
-                                .catch(function(error) {
+                                .catch(function (error) {
                                     return res.status(400).send({
                                         message: errorHandler.getErrorMessage(error)
                                     });
@@ -180,7 +239,7 @@ exports.changepassword1 = function(req, res, next) {
 /**
  * Forgot for reset password (forgot POST)
  */
-exports.forgot = function(req, res, next) {
+exports.forgot = function (req, res, next) {
 
     var smtpConfig = {
         host: (req.app.locals.settings.smtp_host) ? req.app.locals.settings.smtp_host.split(':')[0] : 'smtp.gmail.com',
@@ -197,21 +256,21 @@ exports.forgot = function(req, res, next) {
 
     async.waterfall([
         // Generate random token
-        function(done) {
-            crypto.randomBytes(20, function(err, buffer) {
+        function (done) {
+            crypto.randomBytes(20, function (err, buffer) {
                 var token = Buffer.from('tokensample').toString('hex');
                 done(err, token);
             });
         },
         // Lookup user by username
-        function(token, done) {
+        function (token, done) {
             if (req.body.username) {
 
                 DBModel.find({
                     where: {
                         username: req.body.username.toLowerCase()
                     }
-                }).then(function(user) {
+                }).then(function (user) {
                     if (!user) {
                         return res.status(400).send({
                             message: 'No account with that username has been found'
@@ -219,13 +278,13 @@ exports.forgot = function(req, res, next) {
                     } else {
                         user.resetpasswordtoken = token;
                         user.resetpasswordexpires = Date.now() + 3600000; // 1 hour
-                        user.save().then(function(saved) {
+                        user.save().then(function (saved) {
                             var err = (!saved) ? true : false;
                             done(err, token, saved);
                         });
                         return null;
                     }
-                }).catch(function(err) {
+                }).catch(function (err) {
                     return res.status(400).send({
                         message: 'Username field must not be blank'
                     });
@@ -236,24 +295,24 @@ exports.forgot = function(req, res, next) {
                 });
             }
         },
-        function(token, user, done) {
+        function (token, user, done) {
             res.render(path.resolve('modules/mago/server/templates/reset-password-email'), {
                 name: user.displayName,
                 appName: config.app.title,
                 url: 'http://' + req.headers.host + '/api/auth/tokenvalidate/' + token
-            }, function(err, emailHTML) {
+            }, function (err, emailHTML) {
                 done(err, emailHTML, user);
             });
         },
         // If valid email, send reset email using service
-        function(emailHTML, user, done) {
+        function (emailHTML, user, done) {
             var mailOptions = {
                 to: user.email,
                 from: req.app.locals.settings.email_address,
                 subject: 'Password Reset',
                 html: emailHTML
             };
-            smtpTransport.sendMail(mailOptions, function(err) {
+            smtpTransport.sendMail(mailOptions, function (err) {
                 if (!err) {
                     res.send({
                         message: 'An email has been sent to the provided email with further instructions.'
@@ -267,21 +326,21 @@ exports.forgot = function(req, res, next) {
                 done(err);
             });
         }
-    ], function(err) {
+    ], function (err) {
         if (err) {
             return next(err);
         }
     });
 };
 
-exports.renderPasswordForm = function(req,res) {
-    res.render(path.resolve('modules/mago/server/templates/reset-password-enter-password'), {token:req.params.token}, function(err, html) {
+exports.renderPasswordForm = function (req, res) {
+    res.render(path.resolve('modules/mago/server/templates/reset-password-enter-password'), {token: req.params.token}, function (err, html) {
         res.send(html);
     });
 
 }
 
-exports.resetPassword = function(req,res) {
+exports.resetPassword = function (req, res) {
 
     res.redirect('/admin');
 
