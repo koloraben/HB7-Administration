@@ -64,7 +64,7 @@
     "sequelize": "^3.30.0",
     "sequelize-cli": "^4.1.1",
     "serve-favicon": "^2.3.2",
-    "socket.io": "^1.7.2",
+    "socket.io": "^2.4.0",
     "sqlite3": "^4.0.2",
     "stripe": "^5.4.0",
     "swig": "^1.4.2",
