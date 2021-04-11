@@ -24,7 +24,7 @@
     "express": "^4.14.0",
     "express-mongoose-docs": "^0.3.1",
     "express-session": "^1.15.0",
-    "fast-csv": "^2.4.0",
+    "fast-csv": "^4.3.6",
     "ffprobe-client": "^1.1.2",
     "fluent-ffmpeg": "^2.1.2",
     "fs": "0.0.1-security",
