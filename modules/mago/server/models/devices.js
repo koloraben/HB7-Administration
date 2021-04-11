@@ -9,56 +9,19 @@ module.exports = function(sequelize, DataTypes) {
             autoIncrement: true,
             unique: true
         },
-        username: {
-            type: DataTypes.STRING(30),
-            allowNull: true
-        },
-        login_data_id: {
-            type: DataTypes.INTEGER(11),
-            allowNull: true
-        },
-        googleappid: {
-            type: DataTypes.STRING(255),
-            allowNull: true
-        },
         device_active: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
         },
         device_id: {
-            type: DataTypes.STRING(40),
+            type: DataTypes.STRING(100),
             allowNull: false,
-			unique: true
+            unique: true
         },
-        device_ip: {
-            type: DataTypes.STRING(15),
-            allowNull: true
-		},
         device_mac_address: {
-            type: DataTypes.STRING(15),
-            allowNull: true
-        },
-        device_wifimac_address: {
-            type: DataTypes.STRING(15),
-            allowNull: true
-        },
-		ntype: {
-            type: DataTypes.STRING(2),
-            allowNull: false,
-            defaultValue: '1'
-        },
-        appid: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false
-        },
-        app_name: {
-            type: DataTypes.STRING(45),
-            allowNull: false
-        },
-        app_version: {
             type: DataTypes.STRING(20),
-            allowNull: false
+            allowNull: true
         },
         device_brand: {
             type: DataTypes.STRING(100),
@@ -68,24 +31,11 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
-		screen_resolution: {
-            type: DataTypes.STRING(10),
-            allowNull: true
-        },
-		hdmi: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: false
-        },
-		api_version: {
-            type: DataTypes.STRING(16),
-            allowNull: true
-        },
-		firmware: {
+        firmware: {
             type: DataTypes.STRING(128),
             allowNull: true
         },
-		language: {
+        language: {
             type: DataTypes.STRING(10),
             allowNull: true
         },
@@ -100,7 +50,6 @@ module.exports = function(sequelize, DataTypes) {
     }, {
         tableName: 'devices',
         associate: function(models) {
-            Devices.belongsTo(models.login_data, {foreignKey: 'login_data_id'});
         }
     });
     return Devices;

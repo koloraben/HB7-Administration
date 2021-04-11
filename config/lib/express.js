@@ -92,6 +92,16 @@ module.exports.initMiddleware = function(app) {
   // Add the cookie parser and flash middleware
   app.use(cookieParser());
 
+  /*app.use(function (req, res, next) {
+
+    if (['/api/channel_video'].includes(req.url)) {
+      res.setTimeout(600000, function() {
+        res.send(408);
+      });
+      return next();
+    }
+  })*/
+
   //docs api
   docs(app);
 

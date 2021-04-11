@@ -69,7 +69,7 @@ exports.authenticate = function(req, res) {
                     uid: result.id,
                     role: group
                 }, jwtSecret,{
-                    expiresIn: "4h"
+                    expiresIn: "365 days"
                 });
             res.json({token:token});
         }

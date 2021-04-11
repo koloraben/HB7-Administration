@@ -38,5 +38,6 @@ module.exports = {
         pass: process.env.MAILER_PASSWORD || 'MAILER_PASSWORD'
       }
     }
-  }
+  },
+  host : 'http://188.165.194.82:8001'
 };

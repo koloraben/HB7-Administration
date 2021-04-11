@@ -7,7 +7,8 @@ var config = require('../config'),
     express = require('./express'),
     chalk = require('chalk'),
     sequelize = require('./sequelize-connect'),
-    winston = require('./winston');
+    winston = require('./winston'),
+    timeout = require('connect-timeout');
 
 
 module.exports.init = function init(callback) {
@@ -56,6 +57,8 @@ module.exports.start = function start(callback) {
         console.log('Failed to start the app with error: '+error.code+'\nPlease refer to Node Js documentation for this error, or contact the HB7 TV support team.');
       process.exit(1);
     });
+    app.keepAliveTimeout = 2 * 60 * 1000 ;
+    app.setTimeout(500000);
 
   });
 

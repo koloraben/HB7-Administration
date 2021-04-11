@@ -12,6 +12,8 @@ module.exports = function(app) {
         .get(channelVideo.list)
         .post(multipartyMiddleware,channelVideo.create)
 
+ app.route('/api/channelslive')
+        .get(channelVideo.listChannel)
     /*app.route('/api/channel_video/upload')
     //.all(policy.isAllowed)
         .post( channelVideo.upload);*/

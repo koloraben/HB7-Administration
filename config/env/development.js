@@ -40,5 +40,6 @@ module.exports = {
       }
     }
   },
-  livereload: true
+  livereload: true,
+  host : 'http://188.165.194.82:8001'
 };

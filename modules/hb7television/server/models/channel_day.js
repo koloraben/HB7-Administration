@@ -11,11 +11,11 @@ module.exports = function(sequelize, DataTypes) {
         },
         title: {
             type: DataTypes.STRING(45),
-            allowNull: false,
+            allowNull: true,
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: false
+            allowNull: true
         },
         author: {
             type: DataTypes.STRING(45),

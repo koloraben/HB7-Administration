@@ -44,6 +44,11 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false,
             defaultValue: 1
         },
+        
+            background: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
         isavailable: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

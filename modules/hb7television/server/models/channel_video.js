@@ -22,24 +22,20 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         title: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.TEXT,
             allowNull: false
         }
         ,
-        begin: {
-            type: DataTypes.STRING(10),
-            allowNull: false
-        },
         dur: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(20),
             allowNull: false
         },
         in: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(20),
             allowNull: false
         },
         out: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(20),
             allowNull: false
         },
         ads: {

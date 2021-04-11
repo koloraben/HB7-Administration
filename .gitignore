@@ -1,0 +1,6 @@
+.gitignore
+/node_modules
+/public/admin/node_modules
+/ffplayout-log
+errors.log
+.idea

@@ -1,46 +1,22 @@
 var fs = require('fs'),
     mkdirp = require('mkdirp'),
-    xml2js = require('xml2js'),
+    convert = require('xml-js');
     moment = require('moment'),
+    https = require('https'),
     async = require('async'),
+    host = require(path.resolve('./config/config')).host,
     ConfigParser = require('configparser'),
-    fprobeClient = require('ffprobe-client'),
+    fprobeClient = require('fluent-ffmpeg'),
     path = require('path'),
     db = require(path.resolve('./config/lib/sequelize')).models,
-    Op = require(path.resolve('./config/lib/sequelize')).sequelize.Op,
     DBModel = db.channel_day,
     DBModelChannelVideo = db.channel_video,
     DBModelChannelVideoDay = db.channel_video_day,
-    playlistFolder='/playlist'
-
-var folder;
-
-function makeDirectory(dirName, cb){
-    if (!fs.existsSync(dirName)){
-        mkdirp(dirName, function(err){
-            cb(err);
-        })
-    } else {
-        cb()
-    }
-}
-
-/*function takes a basepath and a custompath.
-Basepath is the url of the CDN+'public'.
-Custompath is the relative path of the file, same url that will be stored to the database
-For each hierarchy level, it checks if path exists. If not, creates folder.
- */
-function mkdir_recursive(basepath, custompath){
-    var fullpath = basepath;
-    for(var i = 0; i< custompath.split('/').length-1; i++){ //length-1 makes sure that the filename itself is not included in the path creation
-        fullpath = fullpath + custompath.split('/')[i]+'/';
-        if (!fs.existsSync(fullpath)) {
-            mkdirp(fullpath, function(err){
-                //todo: return some response?
-            });
-        }
-    }
-}
+    DBModelChannel = db.channels,
+    config = new ConfigParser();
+    //config.read('/etc/ffplayout/ffplayout.conf');
+    //var playlistFolder=config.get("PLAYLIST","playlist_path")?config.get("PLAYLIST","playlist_path"):'/playlists';
+    var playlistFolder = '/playlists';
 
 function moveFile(sourcePath, destPath, cb){
     copyFile(sourcePath, destPath, cb, true);
@@ -52,10 +28,11 @@ function copyFile(sourcePath, destPath, cb, moveFlag){
     source.pipe(dest);
     source.on('end', function() {
         if (moveFlag)
-            fs.unlink(sourcePath);
-        cb();
+            fs.unlinkSync(sourcePath);
+
     });
-    source.on('error', function(err) { cb(err)});
+    cb();
+    //source.on('error', function(err) { cb(err)});
 }
 
 
@@ -85,21 +62,384 @@ function get_file_extention(fileName){
     else return '';
 }
 
+function declineUpload (){
+
+}
+
+exports.list = function(req, res) {
+
+    var date = moment(new Date(),"yyyy-MM-DD")
+
+    DBModel.findAll({include: [ {model:db.channel_video} ],where:{broadcast_day:{$eq:[date]}}}).then(function (result) {
+        console.log("////////////////",result[0],result[1])
+        res.send((result))
+    }).catch(function (err) {
+        console.error('eroor db :',err)
+    })
+
+};
+exports.create = function (req, res) {
+
+    var tomodel = 'model';
+    var tofield = 'field';
+    var jsonPlaylist = {
+        "channel": "",
+        "author": "",
+        "title": "",
+        "date": "",
+        "length": "24:00:00.000",
+        "program": []
+    };
+    async.forEachOf(req.files.file, function (value, i, callback1) {
+        req.files.file[i].ads=req.body.file[i].ads
+        req.files.file[i].order=req.body.file[i].order
+        callback1()
+    }, function (err) {
+        if (err) console.error(err.message);
+        var day =req.body.details.channelDay.broadcast_day.substring(0, 2);
+        var month =req.body.details.channelDay.broadcast_day.substring(3, 5);
+        var year =req.body.details.channelDay.broadcast_day.substring(6, 10);
+        var jsonPlaylistDayFolder = '/' + year + '/' + month+ '/' + day;
+        var jsonDayFile = year + '-' + month+ '-' + day;
+        var jsonDayExt = '.json';
+        mkdirRecursiveSync( playlistFolder + jsonPlaylistDayFolder)
+        var videos=[];
+        jsonPlaylist.author = req.body.details.channelDay.author?req.body.details.channelDay.author:""
+        jsonPlaylist.title = req.body.details.channelDay.title?req.body.details.channelDay.title:""
+        jsonPlaylist.date = req.body.details.channelDay.broadcast_day?req.body.details.channelDay.broadcast_day:""
+
+        async.forEach(req.files.file, function (file, callback) {
+
+            var fileName= file.file.name;
+            var fileExtension = get_file_extention(fileName);
+            var tempPath = file.file.path;
+            var tempDirPath = path.resolve('./public/files/'+tomodel);
+            var uploadLinkPath = jsonPlaylistDayFolder + '/' + fileName.replace(fileExtension, '').replace(/[^0-9a-z]/gi, '')+fileExtension;
+            var targetPath =  playlistFolder + uploadLinkPath;
+            {
+                console.log('tempPath ////////////////// :' , tempPath)
+                fprobeClient.ffprobe(tempPath, function(err, data) {
+                    if(err){
+                        console.error('ffprob error : ',err)
+                        res.json({err: 1, result: 'fail upload, ffprobe'});
+                    }
+                    else{
+                        var duree = parseFloat(data.format.duration);
+                        var video = {
+                            description: '',
+                            absolute_path: targetPath,
+                            title: fileName.split('.').slice(0, -1).join('.'),
+                            ads:file.ads,
+                            dur: duree,
+                            in: 0,
+                            out: duree,
+                            order:file.order,
+                        };
+                        DBModelChannelVideo.create(video)
+                            .then(function (videoCreated) {
+                                videos.push({
+                                    "id": videoCreated.id,
+                                    "source": video.absolute_path,
+                                    "duration": video.dur,
+                                    "in": video.in,
+                                    "out": video.out,
+                                    "order":video.order
+                                })
+                                moveFile(tempPath, targetPath, function(err){
+                                    if (err){
+                                        // res.json({err: 1, result: 'fail upload, file system error'});
+
+                                    }
+                                    else  {
+
+                                    }          });
+
+                                callback();
+                            })
+                            .catch(function (err) {
+                                declineUpload()
+                                console.error('error DB : ',err)
+                                res.json({err: 1, result: 'fail upload,db error'});
+                            })
+                    }
+                })
+
+            }
+
+
+        }, function (err) {
+            videos.sort(((a, b) => parseInt(a.order)-parseInt(b.order)))
+            console.log('videos sorting :' , videos)
+            req.body.details.channelDay.broadcast_day = moment(req.body.details.channelDay.broadcast_day,"DD-MM-yyyy")
+            var channelDay = req.body.details.channelDay;
+            DBModel.findAll({
+                where: {
+                    broadcast_day: req.body.details.channelDay.broadcast_day
+                }
+            }).then(function (channelDays) {
+                if(channelDays.length>0){
+                    DBModel.destroy({where: {id: channelDays[0].id}})
+                        .then(function (success) {
+                            console.info("success db destroy",err)
+                            deleteDirectory();
+                            DBModel.create(channelDay).then(function (channelDay) {
+                                let dayProgramme = {
+                                    "channel": "live HB7 programmé le : " + jsonDayFile,
+                                    "date": "" + jsonDayFile,
+                                    "program": videos
+                                };
+                                dayProgramme.program=videos;
+
+                                let playlist="";
+                                let size = videos.length;
+                                for(let i=0;i<size;i++){
+                                    if(i == size-1)playlist+="file '"+videos[i].source+"'"
+                                    else playlist+="file '"+videos[i].source+"'\n"
+                                }
+                                fs.writeFile(playlistFolder + jsonPlaylistDayFolder +'/'+ jsonDayFile + jsonDayExt, JSON.stringify(dayProgramme), function(err) {
+                                    if(!err){
+                                        var VideoDay = []
+                                        for(let i in videos){
+                                            VideoDay.push({channelDayId	:channelDay.id,channelVideoId:videos[i].id});
+                                        }
+                                        DBModelChannelVideoDay.bulkCreate(VideoDay, {returning: true})
+                                            .then((videos) => { // Notice: There are no arguments here, as of right now you'll have to...
+                                                res.send() // ... in order to get the array of user objects
+                                            }).then(DBModelChannelVideoDay => {
+
+                                        })
+                                    }
+                                    if(err) {
+                                        return console.error(err);
+                                    }
+                                })
+                            },function (err) {
+                                console.error("error db ",err)
+                            })
+                        },function (error) {
+                            console.error("error db destroy",err)
+                        })
+                }else {
+                    DBModel.create(channelDay).then(function (channelDay) {
+                        let dayProgramme = {
+                            "channel": "live HB7 programmé le : " + jsonDayFile,
+                            "date": "" + jsonDayFile,
+                            "program": videos
+                        };
+
+                        let playlist="";
+                        let size = videos.length;
+                        for(let i=0;i<size;i++){
+                            if(i == size-1)playlist+="file '"+videos[i].source+"'"
+                            else playlist+="file '"+videos[i].source+"'\n"
+                        }
+                        fs.writeFile(playlistFolder + jsonPlaylistDayFolder +'/'+ jsonDayFile + jsonDayExt, JSON.stringify(dayProgramme), function(err) {
+                            if(!err){
+                                var VideoDay = []
+                                for(let i in videos){
+                                    VideoDay.push({channelDayId	:channelDay.id,channelVideoId:videos[i].id});
+                                }
+                                DBModelChannelVideoDay.bulkCreate(VideoDay, {returning: true})
+                                    .then((videos) => { // Notice: There are no arguments here, as of right now you'll have to...
+                                        res.send() // ... in order to get the array of user objects
+                                    }).then(DBModelChannelVideoDay => {
+
+                                })
+                            }
+                            if(err) {
+                                return console.error(err);
+                            }
+                        })
+                    },function (err) {
+                        console.error("error db ",err)
+                    })
+                }
+            },function (err) {
+                res.status(500).end()
+            });
+        });
+
+        function mkdirRecursiveSync(path) {
+            if(fs.existsSync(path))deleteDirectory(path)
+            let paths = path.split('/');
+            let fullPath = '';
+            paths.forEach((path) => {
+                if(path!==""){
+                    if (fullPath === '') {
+                        fullPath = '/'+path;
+                    } else {
+                        fullPath = fullPath + '/' + path;
+                    }
+
+                    if (!fs.existsSync(fullPath)) {
+                        fs.mkdirSync(fullPath,function (err) {
+                            if(err) console.log("ERRROOO :: ",err)
+                        });
+                    }
+                }
+
+            });
+        };
+
+        function deleteDirectory(dirPath) {
+            try { var files = fs.readdirSync(dirPath); }
+            catch(e) { return; }
+            if (files.length > 0)
+                for (var i = 0; i < files.length; i++) {
+                    var filePath = dirPath + '/' + files[i];
+                    if (fs.statSync(filePath).isFile())
+                        fs.unlinkSync(filePath);
+                    else
+                        rmDir(filePath);
+                }
+        };
+    })
+}
+
+
+
+
+
+
+exports.listChannel = function (req, res) {
+
+    var resultChannel = {
+        "hb7livetv":[
+            {
+                "category":"live",
+                "videos":[]
+            }
+        ]
+    }
+    
+    DBModelChannel.findAll(
+        {
+            include:[
+                {
+                    model:db.channel_stream,
+                    required:true
+                }
+                    ],
+            order : [['channel_number', 'ASC']]
+        }).then(function (result){
+        console.log("req.pro . host", req.protocol + '://' + req.host )
+        async.forEach(result,function (channelDB,callback) {
+            var channel = {
+                "description":channelDB.description,
+                "sources":channelDB.channel_streams[0].stream_url?channelDB.channel_streams[0].stream_url:"",
+                "card":host+channelDB.icon_url,
+                "background":host+channelDB.background,
+                "title":channelDB.title,
+                "order":channelDB.channel_number,
+                "currentProg":""
+            }
+            if(channelDB.title.startsWith("HB7")){
+                getProgramme().then(value => {
+                    channel.currentProg=value;
+                    resultChannel.hb7livetv[0].videos.push(channel)
+                    callback()
+                }).catch(reason => {
+                    resultChannel.hb7livetv[0].videos.push(channel)
+                    console.error("no current programme")
+                    callback()
+                })
+
+
+            }else {
+                const options = {
+                    "method": "GET",
+                    "hostname": "ns372429.ip-188-165-194.eu",
+                    "port": 443,
+                    "path": encodeURI("/api/epg/events/grid?channel="+channelDB.title+"&mode=now"),
+                    "headers": {}
+                }
+                const reqest = https.request(options, function(res) {
+
+                    var chunks = [];
+
+                    res.on("data", function (chunk) {
+                        chunks.push(chunk);
+                    });
+
+                    res.on("end", function() {
+                        var body = Buffer.concat(chunks);
+                        var response = JSON.parse(body);
+                        if(response["entries"].length==1 && response["entries"][0].hasOwnProperty("start"))
+                        {
+                            console.log("###########################")
+                            console.log(channel.title)
+                            console.log(response["entries"][0].start)
+                            console.log("##########################")
+
+                            channel.currentProg=formatCurrentProg(response["entries"][0].start,response["entries"][0].stop,response["entries"][0].title)
+
+                        } });
+                    resultChannel.hb7livetv[0].videos.push(channel)
+                    callback()
+                });
+                reqest.end()
+            }
+
+
+        },function (err) {
+            res.json(resultChannel)
+        })
+    })
+}
+function formatCurrentProg(start,stop,title) {
+    var start = new Date(start * 1000).toLocaleTimeString('fr-FR', { hour: 'numeric', minute: 'numeric', hour12: false });
+    var stop = new Date(stop * 1000).toLocaleTimeString('fr-FR', { hour: 'numeric', minute: 'numeric', hour12: false });
+    return start +"<>"+stop +" "+ title
+}
+function getProgramme() {
+    return new Promise((resolve, reject) => {
+        var dbdate = new Date();dbdate.setHours(0,0,0,0);
+        DBModel
+            .findAll({
+                include:[ {model:db.channel_video} ],
+                where:{broadcast_day:{$in:[dbdate]}}})
+            .then(function (result) {
+                var event = generateEvents(result)
+                var element = findCurrent(event);
+                if(element && element!=null) resolve(formatCurrentProg(new Date(element.start),new Date(element.end),element.text));
+                else reject(null);
+            })
+            .catch(function (err) {
+                reject(null)
+                console.error('eroor db :',err)
+            })
+    });
+
+
+};
+function findCurrent(events) {
+    var date = new Date();
+    if(events && events.length>0)
+    for (const element of events){
+        if (new Date(element.start)<=date && date<=new Date(element.end))
+            return element
+    }
+    return null;
+
+}
 function generateEvents(result) {
+    var start = 28800;
     let events = []
     for (const channel_day of result) {
-        result.length
-        if(channel_day.channel_videos)
-            var broadcast_day = new Date(channel_day.broadcast_day);
-        console.log("brooo :" , channel_day.channel_videos.length)
+        channel_day.channel_videos.sort(((a, b) => parseInt(a.order)-parseInt(b.order)))
+        if(channel_day.channel_videos) var broadcast_day = new Date(channel_day.broadcast_day);
         for (const channel_video of channel_day.channel_videos) {
             var event={}
             event.id = channel_video.id
             event.text = channel_video.title
-            broadcast_day.setSeconds(channel_video.begin);
-            event.start = broadcast_day.toISOString()
-            broadcast_day.setSeconds(parseFloat(channel_video.begin)+parseFloat(channel_video.dur))
-            event.end = broadcast_day.toISOString()
+            broadcast_day.setSeconds(start);
+            start += Math.floor(parseFloat(channel_video.dur));
+            event.start =  moment(broadcast_day).format('YYYY-MM-DDTHH:mm:ss').toString()
+            broadcast_day = new Date(channel_day.broadcast_day)
+            console.log("start : ",event.start)
+            broadcast_day.setSeconds(start)
+            event.end = moment(broadcast_day).format('YYYY-MM-DDTHH:mm:ss')
+            broadcast_day = new Date(channel_day.broadcast_day)
             event.description = channel_video.description
             event.absolutPath = channel_video.absolute_path
             event.duration = channel_video.dur
@@ -109,317 +449,3 @@ function generateEvents(result) {
     }
     return events;
 }
-function declineUpload (){
-
-}
-
-exports.list = function(req, res) {
-
-    var date = new Date(req.body.date);
-    DBModel.findAll({include: [ {model:db.channel_video} ],where:{broadcast_day:{$eq:[date]}}}).then(function (result) {
-        console.log("////////////////",result[0],result[1])
-        res.send((result))
-    }).catch(function (err) {
-        console.error('eroor db :',err)
-    })
-
-};
-/*exports.upload = function uploadFile (req, res){
-
-    /!* get request and upload file informations *!/
-    var tomodel = 'model';
-    var tofield = 'field';
-    var existingfile = path.resolve('./public'+req.app.locals.settings[tofield]);
-    console.log("req.files ",req.files.file)
-    var fileName= req.files.file.name.replace(/ /g,"_");
-    var fileExtension = get_file_extention(fileName);
-    var tempPath = req.files.file.path;
-    var tempDirPath = path.resolve('./public/files/'+tomodel);
-
-
-    if(fileExtension === '.apk'){
-        var uploadLinkPath = '/files/' + tomodel + '/' + fileName.replace(fileExtension, '').replace(/\W/g, '')+fileExtension; //apk file allows alphanumeric characters and the underscore. append timestamp to ensure uniqueness
-    }
-    else{
-        var uploadLinkPath = '/files/' + tomodel + '/' + Date.now() + fileName.replace(fileExtension, '').replace(/[^0-9a-z]/gi, '')+fileExtension; //other file types allow only alphanumeric characters. append timestamp to ensure uniqueness
-    }
-    var targetPath = path.resolve('./public' + uploadLinkPath);
-
-
-   /!* makeDirectory(tempDirPath, function(){
-        moveFile(tempPath, targetPath, function(err){
-            if (err)
-                res.json({err: 1, result: 'fail upload, file system error'});
-            else{
-                console.log('targetPath :' , targetPath)
-                fprobeClient(targetPath)
-                    .then(data =>{
-                        var duree = data.format.duration
-                        var video = {
-                            description: 'une description',
-                            absolute_path: targetPath,
-                            title: fileName,
-                            begin: '',
-                            dur: duree,
-                            in: '0.00',
-                            out: duree,
-                            order:1
-                        }
-                        DBModelChannelVideo.create(video)
-                            .then(function (videoCreated) {
-                                res.json({err: 0, result: videoCreated});
-                            })
-                            .catch(function (err) {
-                                declineUpload()
-                                console.error('error DB : ',err)
-                                res.json({err: 1, result: 'fail upload,db error'});
-                            })
-                    } )
-                    .catch(err => {
-                        console.error('ffprob error : ',err)
-                        res.json({err: 1, result: 'fail upload, ffprobe'});
-                    })
-            }
-
-
-
-        });
-    });*!/
-
-
-}*/
-
-exports.create = function (req, res) {
-    const fs = require('fs');
-    const path = require('path');
-    var tomodel = 'model';
-    var tofield = 'field';
-
-    for(var i=0;i<req.files.file.length;i++){
-        req.files.file[i].ads=req.body.file[i].ads
-    }
-    console.log("req.req ",req.files.file)
-    console.log("req.channelDay ",req.body.details.channelDay)
-    console.log("broadcast_day ",req.body.details.channelDay.broadcast_day)
-    var day =req.body.details.channelDay.broadcast_day.substring(0, 2);
-    var month =req.body.details.channelDay.broadcast_day.substring(3, 5);
-    var year =req.body.details.channelDay.broadcast_day.substring(6, 10);
-    console.log("day",day)
-    console.log("month",month)
-    console.log("year",year)
-
-    const mkdirSync = function (dirPath) {
-        try {
-            fs.mkdirSync(dirPath)
-        } catch (err) {
-            if (err.code !== 'EEXIST') throw err
-        }
-    }
-    const directoryPath = '/files/' + tomodel + '/' + year
-    mkdirSync(path.resolve('./public'+ directoryPath))
-
-    mkdirSync(path.resolve('./public'+ directoryPath + '/' + month))
-    mkdirSync(path.resolve('./public'+ directoryPath + '/' + month+ '/' + day))
-var videos=[]
-    async.forEach(req.files.file, function (file, callback) {
-        var fileName= file.file.name.replace(/ /g,"_");
-        var fileExtension = get_file_extention(fileName);
-        var tempPath = file.file.path;
-        var tempDirPath = path.resolve('./public/files/'+tomodel);
-        var uploadLinkPath = '/files/' + tomodel + '/' + year + '/' + month + '/' + day + '/' + fileName.replace(fileExtension, '').replace(/[^0-9a-z]/gi, '')+fileExtension;
-        var targetPath = path.resolve('./public' + uploadLinkPath);
-
-        makeDirectory(tempDirPath, function(){
-            moveFile(tempPath, targetPath, function(err){
-                if (err)
-                    res.json({err: 1, result: 'fail upload, file system error'});
-                else{
-                    console.log('targetPath :' , targetPath)
-                    fprobeClient(targetPath)
-                        .then(data =>{
-                            var duree = data.format.duration
-                            var video = {
-                                description: 'une description',
-                                absolute_path: targetPath,
-                                title: fileName,
-                                begin: '',
-                                ads:file.ads,
-                                dur: duree,
-                                in: '0.00',
-                                out: duree,
-                                order:1,
-                                //ads:req.body.file[0].ads
-                            }
-                            DBModelChannelVideo.create(video)
-                                .then(function (videoCreated) {
-                                    //res.json({err: 0, result: videoCreated});
-                                    videos.push(videoCreated)
-
-                                    callback();
-                                })
-                                .catch(function (err) {
-                                    declineUpload()
-                                    console.error('error DB : ',err)
-                                    res.json({err: 1, result: 'fail upload,db error'});
-                                })
-                        } )
-                        .catch(err => {
-                            console.error('ffprob error : ',err)
-                            res.json({err: 1, result: 'fail upload, ffprobe'});
-                        })
-                }
-
-
-
-            });
-        });
-
-    }, function (err) {
-
-
-            const config = new ConfigParser();
-            config.read(path.resolve('./ffplayout.conf'));
-            var startSeconds =config.get("PLAYLIST","day_start")*3600
-            req.body.details.channelDay.broadcast_day = moment(req.body.details.channelDay.broadcast_day,"DD-MM-yyyy")
-
-            var channelDay = req.body.details.channelDay;
-            DBModel.create(channelDay).then(function (channelDay) {
-                var VideoDay = []
-                var videoBegin = []
-                for(let i in videos){
-                    VideoDay.push({channelDayId	:channelDay.id,channelVideoId:videos[i].id});
-                    videoBegin.push({id:videos[i].id,begin:startSeconds,order:videos[i].order})
-                    startSeconds = startSeconds +Math.floor(parseFloat(videos[i].dur));
-                }
-                for(let j in videoBegin){
-                    DBModelChannelVideo.findById(videoBegin[j].id).then(function (video) {
-                        video.update({
-                            begin:videoBegin[j].begin
-                        }).then(function () {
-
-                        })
-                    })
-                }
-                console.log("VideoDay :", VideoDay)
-                DBModelChannelVideoDay.bulkCreate(VideoDay)
-                    .then(() => { // Notice: There are no arguments here, as of right now you'll have to...
-                    }).then(DBModelChannelVideoDay => {
-                    res.send() // ... in order to get the array of user objects
-                })
-            },function (err) {
-                console.error("error db ",err)
-            })
-
-
-    });
-/*for(var i=0;i<req.files.file.length;i++){
-    var fileName= req.files.file[i].file.name.replace(/ /g,"_");
-    var fileExtension = get_file_extention(fileName);
-    var tempPath = req.files.file[i].file.path;
-    var indice=req.files.file[i].ads
-    var tempDirPath = path.resolve('./public/files/'+tomodel);
-    var uploadLinkPath = '/files/' + tomodel + '/' + year + '/' + month + '/' + day + '/' + fileName.replace(fileExtension, '').replace(/[^0-9a-z]/gi, '')+fileExtension;
-    var targetPath = path.resolve('./public' + uploadLinkPath);
-    makeDirectory(tempDirPath, function(){
-        moveFile(tempPath, targetPath, function(err){
-            if (err)
-                res.json({err: 1, result: 'fail upload, file system error'});
-            else{
-                console.log('targetPath :' , targetPath)
-                fprobeClient(targetPath)
-                    .then(data =>{
-                        var duree = data.format.duration
-                        var video = {
-                            description: 'une description',
-                            absolute_path: targetPath,
-                            title: fileName,
-                            begin: '',
-                            ads:indice,
-                            dur: duree,
-                            in: '0.00',
-                            out: duree,
-                            order:1,
-                            //ads:req.body.file[0].ads
-                        }
-                        DBModelChannelVideo.create(video)
-                            .then(function (videoCreated) {
-                                //res.json({err: 0, result: videoCreated});
-                                 videos.push(videoCreated)
-                                nbr--;
-                                if(nbr==0){
-
-                                    const config = new ConfigParser();
-                                    config.read(path.resolve('./ffplayout.conf'));
-                                    var startSeconds =config.get("PLAYLIST","day_start")*3600
-                                    req.body.details.channelDay.broadcast_day = moment(req.body.details.channelDay.broadcast_day,"DD-MM-yyyy")
-
-                                    var channelDay = req.body.details.channelDay;
-                                    DBModel.create(channelDay).then(function (channelDay) {
-                                        var VideoDay = []
-                                        var videoBegin = []
-                                        for(let i in videos){
-                                            VideoDay.push({channelDayId	:channelDay.id,channelVideoId:videos[i].id});
-                                            videoBegin.push({id:videos[i].id,begin:startSeconds,order:videos[i].order})
-                                            startSeconds = startSeconds +Math.floor(parseFloat(videos[i].dur));
-                                        }
-                                        for(let j in videoBegin){
-                                            DBModelChannelVideo.findById(videoBegin[j].id).then(function (video) {
-                                                video.update({
-                                                    begin:videoBegin[j].begin
-                                                }).then(function () {
-
-                                                })
-                                            })
-                                        }
-                                        console.log("VideoDay :", VideoDay)
-                                        DBModelChannelVideoDay.bulkCreate(VideoDay)
-                                            .then(() => { // Notice: There are no arguments here, as of right now you'll have to...
-                                            }).then(DBModelChannelVideoDay => {
-                                            res.send() // ... in order to get the array of user objects
-                                        })
-                                    },function (err) {
-                                        console.error("error db ",err)
-                                    })
-                                }
-                            })
-                            .catch(function (err) {
-                                declineUpload()
-                                console.error('error DB : ',err)
-                                res.json({err: 1, result: 'fail upload,db error'});
-                            })
-                    } )
-                    .catch(err => {
-                        console.error('ffprob error : ',err)
-                        res.json({err: 1, result: 'fail upload, ffprobe'});
-                    })
-            }
-
-
-
-        });
-    });
-}*/
-
-
-   // var existingfile = path.resolve('./public'+req.app.locals.settings[tofield]);
-
-
-
-
-
-        //other file types allow only alphanumeric characters. append timestamp to ensure uniqueness
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
