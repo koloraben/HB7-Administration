@@ -30,7 +30,7 @@
     "md5": "^2.0.0",
     "moment": "^2.24.0",
     "ng-admin": "marmelab/ng-admin",
-    "node-sass": "^3.3.2",
+    "node-sass": "^7.0.0",
     "sass-loader": "^2.0.1",
     "sinon": "ubervu/Sinon.JS",
     "style-loader": "^0.12.3",
