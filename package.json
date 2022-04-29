@@ -6,7 +6,7 @@
   "main": "server.js",
   "dependencies": {
     "acl": "^0.4.10",
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "body-parser": "^1.16.0",
     "chalk": "^1.1.3",
     "common": "^0.2.5",
